@@ -1,7 +1,7 @@
 package com.alex
 
+import com.alex.main.kotlin.feature.Notes
 import com.alex.main.kotlin.feature.Root
-import com.alex.main.kotlin.notes.Notes
 import io.ktor.application.*
 import io.ktor.routing.*
 

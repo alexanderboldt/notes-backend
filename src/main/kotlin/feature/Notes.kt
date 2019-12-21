@@ -1,46 +1,47 @@
-package com.alex.main.kotlin.notes
+package com.alex.main.kotlin.feature
 
-import com.alex.main.kotlin.repository.Note
 import com.alex.main.kotlin.repository.NotesRepository
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.alex.main.kotlin.utils.respondError
+import com.alex.main.kotlin.utils.respondJson
+import com.alex.main.kotlin.utils.toJson
+import com.alex.main.kotlin.utils.toNote
 import io.ktor.application.call
-import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receiveText
-import io.ktor.response.respond
-import io.ktor.response.respondText
-import io.ktor.routing.Routing
-import io.ktor.routing.get
-import io.ktor.routing.post
+import io.ktor.routing.*
 
 object Notes {
 
     private val notesRepository by lazy { NotesRepository() }
 
-    val moshiListNotes = Moshi.Builder().add(KotlinJsonAdapterFactory()).build().adapter<List<Note>>(Types.newParameterizedType(List::class.java, Note::class.java))
-    val moshiNote = Moshi.Builder().add(KotlinJsonAdapterFactory()).build().adapter(Note::class.java)
-    val moshiError = Moshi.Builder().add(KotlinJsonAdapterFactory()).build().adapter(Error::class.java)
-
     // -----------------------------------------------------------------------------
 
     fun routing(): Routing.() -> Unit = {
-
         get("notes") {
-            call.respondText(moshiListNotes.toJson(notesRepository.get()), ContentType.Application.Json, HttpStatusCode.OK)
+            call.respondJson(notesRepository.get().toJson(), HttpStatusCode.OK)
         }
+
         post("notes") {
-            try {
-                val note = moshiNote.fromJson(call.receiveText())
-                if (note != null) {
-                    notesRepository.save(note)
-                    call.respondText(moshiListNotes.toJson(notesRepository.get()), ContentType.Application.Json, HttpStatusCode.Created)
-                } else {
-                    call.respondText(moshiError.toJson(Error("Unexpected body-request")), ContentType.Application.Json, HttpStatusCode.BadRequest)
+            call
+                    .receiveText()
+                    .toNote()
+                    ?.apply {
+                        notesRepository.save(this)
+                        call.respondJson(notesRepository.get().toJson(), HttpStatusCode.Created)
+                    }
+                    ?: run {
+                        call.respondError("Unexpected body-request", HttpStatusCode.BadRequest)
+                    }
+        }
+
+        delete("notes/{id}") {
+            call.parameters["id"]?.toIntOrNull()?.apply {
+                when (notesRepository.delete(this)) {
+                    true -> call.respondJson(notesRepository.get().toJson(), HttpStatusCode.OK)
+                    false -> call.respondError("Could not delete note", HttpStatusCode.Conflict)
                 }
-            } catch (exception: Exception) {
-                call.respondText(moshiError.toJson(Error("Unexpected body-request")), ContentType.Application.Json, HttpStatusCode.BadRequest)
+            } ?: run {
+                call.respondError("Invalid ID", HttpStatusCode.BadRequest)
             }
         }
     }

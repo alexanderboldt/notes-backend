@@ -9,7 +9,7 @@ class NotesRepository {
     fun get() = notes
     fun get(id: Int) = notes.firstOrNull { it.id == id }
 
-    fun save(note: Note) = notes.add(note.apply { id = notes.size + 1})
+    fun save(note: Note) = notes.add(note.apply { id = notes.size + 1 })
 
     fun update(note: Note): Boolean {
         return notes

@@ -1,3 +1,3 @@
-package com.alex.main.kotlin.notes
+package com.alex.main.kotlin.repository
 
-data class Error(val title: String)
+data class Error(val message: String)
