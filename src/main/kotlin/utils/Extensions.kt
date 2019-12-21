@@ -5,9 +5,14 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.ktor.application.ApplicationCall
+import io.ktor.application.call
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.request.receiveText
 import io.ktor.response.respondText
+import io.ktor.routing.Route
+import io.ktor.routing.post
+import io.ktor.util.pipeline.PipelineContext
 
 // models <-> json
 
@@ -57,4 +62,21 @@ suspend fun ApplicationCall.respondError(message: String, statusCode: HttpStatus
         .apply {
             respondText(toJson(com.alex.main.kotlin.repository.Error(message)), ContentType.Application.Json, statusCode)
         }
+}
+
+fun <T> Route.postNotNull(path: String, clazz: Class<T>, block: (PipelineContext<Unit, ApplicationCall>, T) -> Unit) {
+    post(path) {
+        try {
+            val model = Moshi
+                .Builder()
+                .add(KotlinJsonAdapterFactory())
+                .build()
+                .adapter(clazz)
+                .fromJson(call.receiveText())!!
+
+            block(this, model)
+        } catch (exception: Exception) {
+            call.respondError("Unexpected body-request", HttpStatusCode.BadRequest)
+        }
+    }
 }

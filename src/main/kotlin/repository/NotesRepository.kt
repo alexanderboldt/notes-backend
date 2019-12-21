@@ -18,6 +18,11 @@ class NotesRepository {
             .let { it != -1 }
     }
 
+    fun delete(): Boolean {
+        notes.clear()
+        return true
+    }
+
     fun delete(note: Note) = delete(note.id)
     fun delete(id: Int?): Boolean {
         return notes
