@@ -1,8 +1,6 @@
 package com.alex.main.kotlin.utils
 
-import com.alex.main.kotlin.repository.Note
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.content.TextContent
@@ -12,8 +10,9 @@ import io.ktor.http.ContentType
 import io.ktor.http.withCharset
 import io.ktor.request.ApplicationReceiveRequest
 import io.ktor.util.pipeline.PipelineContext
-import kotlinx.coroutines.io.ByteReadChannel
-import kotlinx.coroutines.io.jvm.javaio.toInputStream
+import io.ktor.utils.io.*
+import io.ktor.utils.io.jvm.javaio.*
+import kotlin.reflect.jvm.jvmErasure
 
 class MoshiConverter(private val moshi: Moshi = Moshi.Builder().build()) : ContentConverter {
     override suspend fun convertForReceive(context: PipelineContext<ApplicationReceiveRequest, ApplicationCall>): Any? {
@@ -22,7 +21,7 @@ class MoshiConverter(private val moshi: Moshi = Moshi.Builder().build()) : Conte
         val reader = channel.toInputStream().bufferedReader().readText()
 
         return try {
-            moshi.adapter(request.type.javaObjectType).fromJson(reader)
+            moshi.adapter(request.typeInfo.jvmErasure.javaObjectType).fromJson(reader)
         } catch (exception: Exception) {
             null
         }
