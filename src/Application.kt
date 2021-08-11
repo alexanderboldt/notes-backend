@@ -2,10 +2,9 @@ package com.alex
 
 import com.alex.main.kotlin.feature.Notes
 import com.alex.main.kotlin.feature.Root
-import com.alex.main.kotlin.utils.MoshiConverter
 import io.ktor.application.*
 import io.ktor.features.*
-import io.ktor.http.ContentType
+import io.ktor.gson.*
 import io.ktor.routing.*
 import org.slf4j.event.Level
 
@@ -21,9 +20,16 @@ fun Application.module(testing: Boolean = false) {
         level = Level.INFO
     }
 
+    // looks like gson is easier to use than moshi
+    install(ContentNegotiation) {
+        gson {}
+    }
+
+    /*
     install(ContentNegotiation) {
         register(ContentType.Application.Json, MoshiConverter())
     }
+     */
 
     routing(Root.routing())
     routing(Notes.routing())

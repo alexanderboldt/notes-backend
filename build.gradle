@@ -14,6 +14,7 @@ apply plugin: 'kotlin-kapt'
 
 group 'com.alex'
 version '0.0.1'
+
 mainClassName = "io.ktor.server.netty.EngineMain"
 
 sourceSets {
@@ -25,7 +26,6 @@ sourceSets {
 
 repositories {
     mavenCentral()
-    //jcenter()
 }
 
 dependencies {
@@ -40,4 +40,6 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
     implementation("com.squareup.moshi:moshi:1.12.0")
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.12.0")
+
+    implementation("io.ktor:ktor-gson:$ktor_version")
 }
