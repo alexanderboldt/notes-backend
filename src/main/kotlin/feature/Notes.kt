@@ -4,11 +4,11 @@ import com.alex.main.kotlin.repository.Note
 import com.alex.main.kotlin.repository.NotesList
 import com.alex.main.kotlin.repository.NotesRepository
 import io.ktor.application.call
-import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.request.receiveOrNull
 import io.ktor.response.respond
 import io.ktor.routing.*
+import com.alex.main.kotlin.repository.Error
+import io.ktor.request.*
 
 object Notes {
 
@@ -18,7 +18,8 @@ object Notes {
 
     fun routing(): Routing.() -> Unit = {
         get("notes") {
-            call.respond(HttpStatusCode.OK, NotesList(notesRepository.get()))
+            val limit = call.parameters["limit"]?.toIntOrNull()
+            call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll(limit)))
         }
 
         get("notes/{id}") {
@@ -29,11 +30,11 @@ object Notes {
                     notesRepository.get(id)?.apply {
                         call.respond(HttpStatusCode.OK, this)
                     } ?: run {
-                        call.respond(HttpStatusCode.BadRequest, com.alex.main.kotlin.repository.Error("Note not found with given id!"))
+                        call.respond(HttpStatusCode.BadRequest, Error("Note not found with given id!"))
                     }
                 }
                 ?: run {
-                    call.respond(HttpStatusCode.BadRequest, com.alex.main.kotlin.repository.Error("Invalid id!"))
+                    call.respond(HttpStatusCode.BadRequest, Error("Invalid id!"))
                 }
         }
 
@@ -42,10 +43,9 @@ object Notes {
                 .receiveOrNull<Note>()
                 ?.apply {
                     notesRepository.save(this)
-                    call.respond(HttpStatusCode.Created, NotesList(notesRepository.get()))
-                }
-                ?: run {
-                    call.respond(HttpStatusCode.BadRequest, com.alex.main.kotlin.repository.Error("Unexpected body-request"))
+                    call.respond(HttpStatusCode.Created, NotesList(notesRepository.getAll()))
+                } ?: run {
+                    call.respond(HttpStatusCode.BadRequest, Error("Unexpected body-request"))
                 }
         }
 
@@ -61,34 +61,35 @@ object Notes {
                                 if (isUpdated) {
                                     call.respond(HttpStatusCode.OK, notesRepository.get(id)!!)
                                 } else {
-                                    call.respond(HttpStatusCode.BadRequest, com.alex.main.kotlin.repository.Error("Could not update note!"))
+                                    call.respond(HttpStatusCode.BadRequest, Error("Could not update note!"))
                                 }
                             }
                         }
                         ?: run {
-                            call.respond(HttpStatusCode.BadRequest, com.alex.main.kotlin.repository.Error("Invalid id!"))
+                            call.respond(HttpStatusCode.BadRequest, Error("Invalid id!"))
                         }
                 }
                 ?: run {
-                    call.respond(HttpStatusCode.BadRequest, com.alex.main.kotlin.repository.Error("Unexpected body-request!"))
+                    call.respond(HttpStatusCode.BadRequest, Error("Unexpected body-request!"))
                 }
         }
 
+        // it's possible to delete a whole collection, but not desirable
         delete("notes") {
             when (notesRepository.delete()) {
-                true -> call.respond(HttpStatusCode.OK, NotesList(notesRepository.get()))
-                false -> call.respond(HttpStatusCode.Conflict, com.alex.main.kotlin.repository.Error("Could not delete all notes!"))
+                true -> call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll()))
+                false -> call.respond(HttpStatusCode.Conflict, Error("Could not delete all notes!"))
             }
         }
 
         delete("notes/{id}") {
             call.parameters["id"]?.toIntOrNull()?.apply {
                 when (notesRepository.delete(this)) {
-                    true -> call.respond(HttpStatusCode.OK, NotesList(notesRepository.get()))
-                    false -> call.respond(HttpStatusCode.Conflict, com.alex.main.kotlin.repository.Error("Could not delete note!"))
+                    true -> call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll()))
+                    false -> call.respond(HttpStatusCode.Conflict, Error("Could not delete note!"))
                 }
             } ?: run {
-                call.respond(HttpStatusCode.Conflict, com.alex.main.kotlin.repository.Error("Invalid id!"))
+                call.respond(HttpStatusCode.Conflict, Error("Invalid id!"))
             }
         }
     }
