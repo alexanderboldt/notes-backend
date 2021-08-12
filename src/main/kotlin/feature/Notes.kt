@@ -20,14 +20,18 @@ object Notes {
     // -----------------------------------------------------------------------------
 
     fun routing(): Routing.() -> Unit = {
-        get("notes") {
+        get("v1/notes") {
+            call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll()))
+        }
+
+        get("v2/notes") {
             call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll(
                 call.getSortParameter(),
                 call.getOffsetParameter(),
                 call.getLimitParameter())))
         }
 
-        get("notes/{id}") {
+        get("v1/notes/{id}") {
             call
                 .parameters["id"]
                 ?.toIntOrNull()
@@ -43,7 +47,7 @@ object Notes {
                 }
         }
 
-        post("notes") {
+        post("v1/notes") {
             call
                 .receiveOrNull<Note>()
                 ?.apply {
@@ -54,7 +58,7 @@ object Notes {
                 }
         }
 
-        put("notes/{id}") {
+        put("v1/notes/{id}") {
             call
                 .receiveOrNull<Note>()
                 ?.also { note ->
@@ -69,25 +73,23 @@ object Notes {
                                     call.respond(HttpStatusCode.BadRequest, Error("Could not update note!"))
                                 }
                             }
-                        }
-                        ?: run {
+                        } ?: run {
                             call.respond(HttpStatusCode.BadRequest, Error("Invalid id!"))
                         }
-                }
-                ?: run {
+                } ?: run {
                     call.respond(HttpStatusCode.BadRequest, Error("Unexpected body-request!"))
                 }
         }
 
         // it's possible to delete a whole collection, but not desirable
-        delete("notes") {
+        delete("v1/notes") {
             when (notesRepository.delete()) {
                 true -> call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll()))
                 false -> call.respond(HttpStatusCode.Conflict, Error("Could not delete all notes!"))
             }
         }
 
-        delete("notes/{id}") {
+        delete("v1/notes/{id}") {
             call.parameters["id"]?.toIntOrNull()?.apply {
                 when (notesRepository.delete(this)) {
                     true -> call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll()))

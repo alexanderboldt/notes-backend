@@ -17,4 +17,4 @@ fun ApplicationCall.getSortParameter(): Pair<String,Boolean>? {
 }
 
 fun ApplicationCall.getOffsetParameter(): Int? = parameters[PARAMETER_OFFSET]?.toIntOrNull()
-fun ApplicationCall.getLimitParameter(): Int? = parameters[PARAMETER_LIMIT]?.toIntOrNull()
+fun ApplicationCall.getLimitParameter(): Int? = parameters[PARAMETER_LIMIT]?.toIntOrNull()?.let { if (it < 0) 0 else it }
