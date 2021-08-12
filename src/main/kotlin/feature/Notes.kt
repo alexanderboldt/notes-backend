@@ -19,7 +19,9 @@ object Notes {
     fun routing(): Routing.() -> Unit = {
         get("notes") {
             val limit = call.parameters["limit"]?.toIntOrNull()
-            call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll(limit)))
+            val offset = call.parameters["offset"]?.toIntOrNull()
+
+            call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll(offset, limit)))
         }
 
         get("notes/{id}") {

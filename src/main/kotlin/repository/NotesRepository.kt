@@ -1,5 +1,8 @@
 package com.alex.main.kotlin.repository
 
+import com.alex.main.kotlin.feature.Notes
+import kotlin.collections.ArrayList
+
 class NotesRepository {
 
     private val notes = arrayListOf<Note>()
@@ -13,7 +16,7 @@ class NotesRepository {
             Note(2, "Aufräumen", "Grundreinigung"),
             Note(3, "Abwaschen", null),
             Note(4, "Tanken", "Diesel"),
-            Note(4, "Blumen gießen", "Den Dünger nicht vergessen")))
+            Note(5, "Blumen gießen", "Den Dünger nicht vergessen")))
     }
 
     // -----------------------------------------------------------------------------
@@ -22,7 +25,12 @@ class NotesRepository {
     fun save(note: Note) = notes.add(note.apply { id = notes.size + 1 })
 
     // read
-    fun getAll(limit: Int? = null) = if (limit != null) notes.take(limit) else notes
+    fun getAll(offset: Int? = null, limit: Int? = null): List<Note> {
+        return notes
+            .drop(if (offset != null && offset >= 0) offset else 0)
+            .let { notes -> if (limit != null) notes.take(limit) else notes }
+    }
+
     fun get(id: Int) = notes.firstOrNull { it.id == id }
 
     // update
