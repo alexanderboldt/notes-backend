@@ -8,6 +8,9 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
 import io.ktor.routing.*
 import com.alex.main.kotlin.repository.Error
+import com.alex.main.kotlin.utils.getLimitParameter
+import com.alex.main.kotlin.utils.getOffsetParameter
+import com.alex.main.kotlin.utils.getSortParameter
 import io.ktor.request.*
 
 object Notes {
@@ -18,10 +21,10 @@ object Notes {
 
     fun routing(): Routing.() -> Unit = {
         get("notes") {
-            val limit = call.parameters["limit"]?.toIntOrNull()
-            val offset = call.parameters["offset"]?.toIntOrNull()
-
-            call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll(offset, limit)))
+            call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll(
+                call.getSortParameter(),
+                call.getOffsetParameter(),
+                call.getLimitParameter())))
         }
 
         get("notes/{id}") {

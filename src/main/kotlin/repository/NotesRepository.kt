@@ -1,8 +1,5 @@
 package com.alex.main.kotlin.repository
 
-import com.alex.main.kotlin.feature.Notes
-import kotlin.collections.ArrayList
-
 class NotesRepository {
 
     private val notes = arrayListOf<Note>()
@@ -12,11 +9,11 @@ class NotesRepository {
     init {
         // seeds
         notes.addAll(listOf(
-            Note(1, "Einkaufen", "Das Gemüse nicht vergessen"),
+            Note(1, "Einkaufen", "Gemüse nicht vergessen"),
             Note(2, "Aufräumen", "Grundreinigung"),
             Note(3, "Abwaschen", null),
             Note(4, "Tanken", "Diesel"),
-            Note(5, "Blumen gießen", "Den Dünger nicht vergessen")))
+            Note(5, "Blumen gießen", "Dünger nicht vergessen")))
     }
 
     // -----------------------------------------------------------------------------
@@ -25,10 +22,16 @@ class NotesRepository {
     fun save(note: Note) = notes.add(note.apply { id = notes.size + 1 })
 
     // read
-    fun getAll(offset: Int? = null, limit: Int? = null): List<Note> {
+    fun getAll(sort: Pair<String,Boolean>? = null, offset: Int? = null, limit: Int? = null): List<Note> {
         return notes
-            .drop(if (offset != null && offset >= 0) offset else 0)
-            .let { notes -> if (limit != null) notes.take(limit) else notes }
+            .apply {
+                when (sort?.first) {
+                    "id" -> if (sort.second) sortBy { it.id } else sortByDescending { it.id }
+                    "title" -> if (sort.second) sortBy { it.title } else sortByDescending { it.title }
+                    "description" -> if (sort.second) sortBy { it.description } else sortByDescending { it.description }
+                }
+            }.drop(if (offset != null && offset >= 0) offset else 0)
+            .run { if (limit != null) take(limit) else this }
     }
 
     fun get(id: Int) = notes.firstOrNull { it.id == id }
