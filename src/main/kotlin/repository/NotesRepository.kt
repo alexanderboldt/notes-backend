@@ -1,5 +1,7 @@
 package com.alex.main.kotlin.repository
 
+import java.util.*
+
 class NotesRepository {
 
     private val notes = arrayListOf<Note>()
@@ -8,18 +10,28 @@ class NotesRepository {
 
     init {
         // seeds
+        val date = Date().time
+        
         notes.addAll(listOf(
-            Note(1, "Einkaufen", "Gemüse nicht vergessen"),
-            Note(2, "Aufräumen", "Grundreinigung"),
-            Note(3, "Abwaschen", null),
-            Note(4, "Tanken", "Diesel"),
-            Note(5, "Blumen gießen", "Dünger nicht vergessen")))
+            Note(1, "Einkaufen", "Gemüse nicht vergessen", date, date),
+            Note(2, "Aufräumen", "Grundreinigung", date, date),
+            Note(3, "Abwaschen", null, date, date),
+            Note(4, "Tanken", "Diesel", date, date),
+            Note(5, "Blumen gießen", "Dünger nicht vergessen", date, date)))
     }
 
     // -----------------------------------------------------------------------------
 
     // create
-    fun save(note: Note) = notes.add(note.apply { id = notes.size + 1 })
+    fun save(note: Note) {
+        val date = Date().time
+
+        note.apply {
+            id = notes.size + 1
+            createdAt = date
+            updatedAt = date
+        }.apply { notes.add(this) }
+    }
 
     // read
     fun getAll(sort: Pair<String,Boolean>? = null, offset: Int? = null, limit: Int? = null): List<Note> {
@@ -50,7 +62,6 @@ class NotesRepository {
         return true
     }
 
-    fun delete(note: Note) = delete(note.id)
     fun delete(id: Int?): Boolean {
         return notes
             .indexOfFirst { it.id == id }

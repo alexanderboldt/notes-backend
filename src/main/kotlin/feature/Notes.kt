@@ -5,13 +5,14 @@ import com.alex.main.kotlin.repository.NotesList
 import com.alex.main.kotlin.repository.NotesRepository
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
-import io.ktor.response.respond
 import io.ktor.routing.*
 import com.alex.main.kotlin.repository.Error
 import com.alex.main.kotlin.utils.getLimitParameter
 import com.alex.main.kotlin.utils.getOffsetParameter
 import com.alex.main.kotlin.utils.getSortParameter
 import io.ktor.request.*
+import io.ktor.response.*
+import java.util.*
 
 object Notes {
 
@@ -20,7 +21,24 @@ object Notes {
     // -----------------------------------------------------------------------------
 
     fun routing(): Routing.() -> Unit = {
+
+        // create
+
+        post("v1/notes") {
+            call
+                .receiveOrNull<Note>()
+                ?.apply {
+                    notesRepository.save(this)
+                    call.respond(HttpStatusCode.Created, NotesList(notesRepository.getAll()))
+                } ?: run {
+                    call.respond(HttpStatusCode.BadRequest, Error("Unexpected body-request"))
+                }
+        }
+
+        // read
+
         get("v1/notes") {
+            call.response.header("Deprecated", "true")
             call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll()))
         }
 
@@ -41,22 +59,12 @@ object Notes {
                     } ?: run {
                         call.respond(HttpStatusCode.BadRequest, Error("Note not found with given id!"))
                     }
-                }
-                ?: run {
+                } ?: run {
                     call.respond(HttpStatusCode.BadRequest, Error("Invalid id!"))
                 }
         }
 
-        post("v1/notes") {
-            call
-                .receiveOrNull<Note>()
-                ?.apply {
-                    notesRepository.save(this)
-                    call.respond(HttpStatusCode.Created, NotesList(notesRepository.getAll()))
-                } ?: run {
-                    call.respond(HttpStatusCode.BadRequest, Error("Unexpected body-request"))
-                }
-        }
+        // update
 
         put("v1/notes/{id}") {
             call
@@ -66,13 +74,16 @@ object Notes {
                         .parameters["id"]
                         ?.toIntOrNull()
                         ?.also { id ->
-                            notesRepository.update(note.copy(id = id)).also { isUpdated ->
-                                if (isUpdated) {
+                            notesRepository
+                                .get(id)
+                                ?.apply {
+                                    title = note.title
+                                    description = note.description
+                                    updatedAt = Date().time
+                                }?.apply {
+                                    notesRepository.update(this)
                                     call.respond(HttpStatusCode.OK, notesRepository.get(id)!!)
-                                } else {
-                                    call.respond(HttpStatusCode.BadRequest, Error("Could not update note!"))
-                                }
-                            }
+                                }?: call.respond(HttpStatusCode.BadRequest, Error("Could not update note!"))
                         } ?: run {
                             call.respond(HttpStatusCode.BadRequest, Error("Invalid id!"))
                         }
@@ -80,6 +91,8 @@ object Notes {
                     call.respond(HttpStatusCode.BadRequest, Error("Unexpected body-request!"))
                 }
         }
+
+        // delete
 
         // it's possible to delete a whole collection, but not desirable
         delete("v1/notes") {
