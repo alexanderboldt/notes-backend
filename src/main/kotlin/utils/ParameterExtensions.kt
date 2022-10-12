@@ -1,20 +1,26 @@
 package com.alex.main.kotlin.utils
 
-import io.ktor.application.*
+import io.ktor.server.application.*
 
+const val PARAMETER_ID = "{id}"
 private const val PARAMETER_SORT = "sort"
 private const val PARAMETER_OFFSET = "offset"
 private const val PARAMETER_LIMIT = "limit"
 
-fun ApplicationCall.getSortParameter(): Pair<String,Boolean>? {
-    return parameters[PARAMETER_SORT]?.run {
-        if (startsWith("-")) {
-            substring(1, length) to false
-        } else {
-            this to true
-        }
-    }
-}
+val ApplicationCall.idParameter: Int?
+    get() = parameters["id"]?.toIntOrNull()
 
-fun ApplicationCall.getOffsetParameter(): Int? = parameters[PARAMETER_OFFSET]?.toIntOrNull()
-fun ApplicationCall.getLimitParameter(): Int? = parameters[PARAMETER_LIMIT]?.toIntOrNull()?.let { if (it < 0) 0 else it }
+val ApplicationCall.sortParameter: Pair<String, Boolean>?
+    get() {
+        return parameters[PARAMETER_SORT]?.run {
+            when (startsWith("-")) {
+                true -> substring(1, length) to false
+                false -> this to true
+            }
+        }
+}
+val ApplicationCall.offsetParameter: Int?
+    get() = parameters[PARAMETER_OFFSET]?.toIntOrNull()
+
+val ApplicationCall.limitParameter: Int?
+    get() = parameters[PARAMETER_LIMIT]?.toIntOrNull()?.let { if (it < 0) 0 else it }

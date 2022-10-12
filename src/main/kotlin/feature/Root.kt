@@ -1,14 +1,11 @@
 package com.alex.main.kotlin.feature
 
-import io.ktor.application.call
-import io.ktor.response.respond
-import io.ktor.routing.Routing
-import io.ktor.routing.get
+import io.ktor.server.application.call
+import io.ktor.server.response.respond
+import io.ktor.server.routing.*
 
-object Root {
-    fun routing(): Routing.() -> Unit = {
-        get("/") {
-            call.respond("welcome")
-        }
+fun Route.rootRouting() {
+    get("/") {
+        call.respond("Welcome to the notes-backend.")
     }
 }

@@ -1,115 +1,106 @@
 package com.alex.main.kotlin.feature
 
-import com.alex.main.kotlin.repository.Note
-import com.alex.main.kotlin.repository.NotesList
-import com.alex.main.kotlin.repository.NotesRepository
-import io.ktor.application.call
+import com.alex.main.kotlin.repository.database.DbModelNote
+import com.alex.main.kotlin.repository.database.NoteDao
+import io.ktor.server.application.call
 import io.ktor.http.HttpStatusCode
-import io.ktor.routing.*
-import com.alex.main.kotlin.repository.Error
-import com.alex.main.kotlin.utils.getLimitParameter
-import com.alex.main.kotlin.utils.getOffsetParameter
-import com.alex.main.kotlin.utils.getSortParameter
-import io.ktor.request.*
-import io.ktor.response.*
+import io.ktor.server.routing.*
+import com.alex.main.kotlin.repository.rest.RestModelError
+import com.alex.main.kotlin.repository.rest.RestModelNotePost
+import com.alex.main.kotlin.repository.rest.RestModelNotePut
+import com.alex.main.kotlin.repository.toRestModelGet
+import com.alex.main.kotlin.utils.*
+import io.ktor.server.response.*
 import java.util.*
 
-object Notes {
+fun Route.notesRouting() {
 
-    private val notesRepository by lazy { NotesRepository() }
+    val noteDao = NoteDao()
 
-    // -----------------------------------------------------------------------------
+    val pathV1 = "v1"
+    val pathV2 = "v2"
 
-    fun routing(): Routing.() -> Unit = {
+    val resource = "notes"
 
-        // create
+    route(pathV1) {
+        route(resource) {
 
-        post("v1/notes") {
-            call
-                .receiveOrNull<Note>()
-                ?.apply {
-                    notesRepository.save(this)
-                    call.respond(HttpStatusCode.Created, NotesList(notesRepository.getAll()))
-                } ?: run {
-                    call.respond(HttpStatusCode.BadRequest, Error("Unexpected body-request"))
+            // create
+
+            post {
+                val note = call.safeReceiveOrNull<RestModelNotePost>() ?: return@post call.respond(HttpStatusCode.BadRequest, RestModelError("Unexpected body-request"))
+
+                val date = Date().time
+                noteDao.save(DbModelNote(0, note.title, note.description, date, date))
+                call.respond(HttpStatusCode.Created, noteDao.getAll().toRestModelGet())
+            }
+
+            // read
+
+            get {
+                call.response.header("Deprecated", "true")
+                call.respond(HttpStatusCode.OK, noteDao.getAll().toRestModelGet())
+            }
+
+            get(PARAMETER_ID) {
+                val id = call.idParameter ?: return@get call.respond(HttpStatusCode.BadRequest, RestModelError("Invalid id!"))
+
+                val note = noteDao.get(id)
+                when (note != null) {
+                    true -> call.respond(HttpStatusCode.OK, note.toRestModelGet())
+                    false -> call.respond(HttpStatusCode.BadRequest, RestModelError("Note not found with given id!"))
                 }
-        }
+            }
 
-        // read
+            // update
 
-        get("v1/notes") {
-            call.response.header("Deprecated", "true")
-            call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll()))
-        }
+            put(PARAMETER_ID) {
+                val note = call.safeReceiveOrNull<RestModelNotePut>() ?: return@put call.respond(HttpStatusCode.BadRequest, RestModelError("Unexpected body-request!"))
+                val id = call.idParameter ?: return@put call.respond(HttpStatusCode.BadRequest, RestModelError("Invalid id!"))
 
-        get("v2/notes") {
-            call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll(
-                call.getSortParameter(),
-                call.getOffsetParameter(),
-                call.getLimitParameter())))
-        }
+                noteDao
+                    .get(id)
+                    ?.apply {
+                        title = note.title ?: title
+                        description = note.description ?: description
+                        updatedAt = Date().time
+                    }?.apply {
+                        noteDao.update(this)
+                        call.respond(HttpStatusCode.OK, noteDao.get(id)!!.toRestModelGet())
+                    } ?: call.respond(HttpStatusCode.BadRequest, RestModelError("Could not update note!"))
+            }
 
-        get("v1/notes/{id}") {
-            call
-                .parameters["id"]
-                ?.toIntOrNull()
-                ?.also { id ->
-                    notesRepository.get(id)?.apply {
-                        call.respond(HttpStatusCode.OK, this)
-                    } ?: run {
-                        call.respond(HttpStatusCode.BadRequest, Error("Note not found with given id!"))
-                    }
-                } ?: run {
-                    call.respond(HttpStatusCode.BadRequest, Error("Invalid id!"))
+            // delete
+
+            delete {
+                when (noteDao.delete()) {
+                    true -> call.respond(HttpStatusCode.OK, noteDao.getAll().toRestModelGet())
+                    false -> call.respond(HttpStatusCode.Conflict, RestModelError("Could not delete all notes!"))
                 }
-        }
+            }
 
-        // update
+            delete(PARAMETER_ID) {
+                val id = call.idParameter ?: return@delete call.respond(HttpStatusCode.BadRequest, RestModelError("Invalid id!"))
 
-        put("v1/notes/{id}") {
-            call
-                .receiveOrNull<Note>()
-                ?.also { note ->
-                    call
-                        .parameters["id"]
-                        ?.toIntOrNull()
-                        ?.also { id ->
-                            notesRepository
-                                .get(id)
-                                ?.apply {
-                                    title = note.title
-                                    description = note.description
-                                    updatedAt = Date().time
-                                }?.apply {
-                                    notesRepository.update(this)
-                                    call.respond(HttpStatusCode.OK, notesRepository.get(id)!!)
-                                }?: call.respond(HttpStatusCode.BadRequest, Error("Could not update note!"))
-                        } ?: run {
-                            call.respond(HttpStatusCode.BadRequest, Error("Invalid id!"))
-                        }
-                } ?: run {
-                    call.respond(HttpStatusCode.BadRequest, Error("Unexpected body-request!"))
+                when (noteDao.delete(id)) {
+                    true -> call.respond(HttpStatusCode.OK, noteDao.getAll().toRestModelGet())
+                    false -> call.respond(HttpStatusCode.Conflict, RestModelError("Could not delete note!"))
                 }
-        }
-
-        // delete
-
-        // it's possible to delete a whole collection, but not desirable
-        delete("v1/notes") {
-            when (notesRepository.delete()) {
-                true -> call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll()))
-                false -> call.respond(HttpStatusCode.Conflict, Error("Could not delete all notes!"))
             }
         }
+    }
 
-        delete("v1/notes/{id}") {
-            call.parameters["id"]?.toIntOrNull()?.apply {
-                when (notesRepository.delete(this)) {
-                    true -> call.respond(HttpStatusCode.OK, NotesList(notesRepository.getAll()))
-                    false -> call.respond(HttpStatusCode.Conflict, Error("Could not delete note!"))
-                }
-            } ?: run {
-                call.respond(HttpStatusCode.Conflict, Error("Invalid id!"))
+    route(pathV2) {
+        route(resource) {
+            get {
+                call.respond(
+                    HttpStatusCode.OK,
+                    noteDao.getAll(
+                        call.sortParameter,
+                        call.offsetParameter,
+                        call.limitParameter
+                    ).toRestModelGet()
+                )
             }
         }
     }

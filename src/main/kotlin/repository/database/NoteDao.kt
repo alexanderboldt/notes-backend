@@ -1,40 +1,37 @@
-package com.alex.main.kotlin.repository
+package com.alex.main.kotlin.repository.database
 
 import java.util.*
 
-class NotesRepository {
+class NoteDao {
 
-    private val notes = arrayListOf<Note>()
+    private val notes = mutableListOf<DbModelNote>()
 
     // -----------------------------------------------------------------------------
 
     init {
         // seeds
         val date = Date().time
-        
-        notes.addAll(listOf(
-            Note(1, "Einkaufen", "Gemüse nicht vergessen", date, date),
-            Note(2, "Aufräumen", "Grundreinigung", date, date),
-            Note(3, "Abwaschen", null, date, date),
-            Note(4, "Tanken", "Diesel", date, date),
-            Note(5, "Blumen gießen", "Dünger nicht vergessen", date, date)))
+
+        notes.addAll(
+            listOf(
+                DbModelNote(1, "Einkaufen", "Gemüse nicht vergessen", date, date),
+                DbModelNote(2, "Aufräumen", "Grundreinigung", date, date),
+                DbModelNote(3, "Abwaschen", null, date, date),
+                DbModelNote(4, "Tanken", "Diesel", date, date),
+                DbModelNote(5, "Blumen gießen", "Dünger nicht vergessen", date, date)
+            )
+        )
     }
 
     // -----------------------------------------------------------------------------
 
     // create
-    fun save(note: Note) {
-        val date = Date().time
-
-        note.apply {
-            id = notes.size + 1
-            createdAt = date
-            updatedAt = date
-        }.apply { notes.add(this) }
+    fun save(note: DbModelNote) {
+        notes.add(note.copy(id = notes.size + 1))
     }
 
     // read
-    fun getAll(sort: Pair<String,Boolean>? = null, offset: Int? = null, limit: Int? = null): List<Note> {
+    fun getAll(sort: Pair<String,Boolean>? = null, offset: Int? = null, limit: Int? = null): List<DbModelNote> {
         return notes
             .apply {
                 when (sort?.first) {
@@ -49,7 +46,7 @@ class NotesRepository {
     fun get(id: Int) = notes.firstOrNull { it.id == id }
 
     // update
-    fun update(note: Note): Boolean {
+    fun update(note: DbModelNote): Boolean {
         return notes
             .indexOfFirst { it.id == note.id }
             .also { if (it != -1) notes[it] = note }
