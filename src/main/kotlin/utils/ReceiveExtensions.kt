@@ -1,7 +1,6 @@
-package com.alex.main.kotlin.utils
+package com.alex.utils
 
 import io.ktor.server.application.*
-import io.ktor.server.request.*
 import io.ktor.util.reflect.*
 
 suspend inline fun <reified T> ApplicationCall.safeReceiveOrNull(): T? = try {

@@ -1,6 +1,5 @@
-package com.alex.main.kotlin.feature
+package com.alex.feature
 
-import io.ktor.server.application.call
 import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 

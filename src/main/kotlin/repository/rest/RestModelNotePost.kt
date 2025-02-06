@@ -1,4 +1,4 @@
-package com.alex.main.kotlin.repository.rest
+package com.alex.repository.rest
 
 import kotlinx.serialization.Serializable
 

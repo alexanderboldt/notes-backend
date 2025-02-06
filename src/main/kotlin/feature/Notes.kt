@@ -1,16 +1,14 @@
-package com.alex.main.kotlin.feature
+package com.alex.feature
 
-import com.alex.main.kotlin.repository.database.DbModelNote
-import com.alex.main.kotlin.repository.database.NoteDao
-import io.ktor.server.application.call
+import com.alex.repository.database.NoteDao
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.routing.*
-import com.alex.main.kotlin.repository.rest.RestModelError
-import com.alex.main.kotlin.repository.rest.RestModelNotePost
-import com.alex.main.kotlin.repository.rest.RestModelNotePut
-import com.alex.main.kotlin.repository.toRestModelGet
-import com.alex.main.kotlin.utils.*
-import io.ktor.server.request.*
+import com.alex.repository.rest.RestModelError
+import com.alex.repository.rest.RestModelNotePost
+import com.alex.repository.rest.RestModelNotePut
+import com.alex.repository.toDbModel
+import com.alex.repository.toRestModelGet
+import com.alex.utils.*
 import io.ktor.server.response.*
 import java.util.*
 
@@ -31,9 +29,7 @@ fun Route.notesRouting() {
             post {
                 val note = call.safeReceiveOrNull<RestModelNotePost>() ?: return@post call.respond(HttpStatusCode.BadRequest, RestModelError("Unexpected body-request"))
 
-                val date = Date().time
-                noteDao.save(DbModelNote(0, note.title, note.description, date, date))
-                call.respond(HttpStatusCode.Created, noteDao.getAll().toRestModelGet())
+                call.respond(HttpStatusCode.Created, noteDao.save(note.toDbModel()).toRestModelGet())
             }
 
             // read

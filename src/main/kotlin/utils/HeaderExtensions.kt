@@ -1,4 +1,4 @@
-package com.alex.main.kotlin.utils
+package com.alex.utils
 
 import io.ktor.server.application.*
 

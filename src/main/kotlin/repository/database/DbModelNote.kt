@@ -1,4 +1,4 @@
-package com.alex.main.kotlin.repository.database
+package com.alex.repository.database
 
 data class DbModelNote(
     var id: Int,

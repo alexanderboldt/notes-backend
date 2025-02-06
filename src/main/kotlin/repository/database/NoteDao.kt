@@ -1,4 +1,4 @@
-package com.alex.main.kotlin.repository.database
+package com.alex.repository.database
 
 import java.util.*
 
@@ -26,8 +26,10 @@ class NoteDao {
     // -----------------------------------------------------------------------------
 
     // create
-    fun save(note: DbModelNote) {
-        notes.add(note.copy(id = notes.size + 1))
+    fun save(note: DbModelNote): DbModelNote {
+        val noteNew = note.copy(id = notes.size + 1)
+        notes.add(noteNew)
+        return noteNew
     }
 
     // read
