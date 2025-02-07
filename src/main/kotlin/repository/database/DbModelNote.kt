@@ -1,5 +1,9 @@
 package com.alex.repository.database
 
+import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.Table
+
+@Serializable
 data class DbModelNote(
     var id: Int,
     var title: String,
@@ -7,3 +11,13 @@ data class DbModelNote(
     var createdAt: Long,
     var updatedAt: Long
 )
+
+object NoteTable : Table() {
+    val id = integer("id").autoIncrement()
+    val title = varchar("title", 50)
+    val description = varchar("description", 50).nullable()
+    val createdAt = long("created_at")
+    val updatedAt = long("updated_at")
+
+    override val primaryKey = PrimaryKey(id)
+}

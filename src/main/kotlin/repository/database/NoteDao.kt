@@ -1,70 +1,76 @@
 package com.alex.repository.database
 
-import java.util.*
+import kotlinx.coroutines.Dispatchers
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.update
 
 class NoteDao {
 
-    private val notes = mutableListOf<DbModelNote>()
+    private suspend fun <T> dbQuery(block: suspend () -> T): T =
+        newSuspendedTransaction(Dispatchers.IO) { block() }
 
-    // -----------------------------------------------------------------------------
-
-    init {
-        // seeds
-        val date = Date().time
-
-        notes.addAll(
-            listOf(
-                DbModelNote(1, "Einkaufen", "Gemüse nicht vergessen", date, date),
-                DbModelNote(2, "Aufräumen", "Grundreinigung", date, date),
-                DbModelNote(3, "Abwaschen", null, date, date),
-                DbModelNote(4, "Tanken", "Diesel", date, date),
-                DbModelNote(5, "Blumen gießen", "Dünger nicht vergessen", date, date)
-            )
+    private fun ResultRow.toDbModel(): DbModelNote {
+        return DbModelNote(
+            id = this[NoteTable.id],
+            title = this[NoteTable.title],
+            description = this[NoteTable.description],
+            createdAt = this[NoteTable.createdAt],
+            updatedAt = this[NoteTable.updatedAt]
         )
     }
 
-    // -----------------------------------------------------------------------------
-
     // create
-    fun save(note: DbModelNote): DbModelNote {
-        val noteNew = note.copy(id = notes.size + 1)
-        notes.add(noteNew)
-        return noteNew
+
+    suspend fun save(note: DbModelNote): DbModelNote = dbQuery {
+        val inserted = NoteTable.insert {
+            it[title] = note.title
+            it[description] = note.description
+            it[createdAt] = note.createdAt
+            it[updatedAt] = note.updatedAt
+        }
+
+        NoteTable
+            .selectAll()
+            .where { NoteTable.id eq inserted[NoteTable.id] }
+            .map { it.toDbModel() }
+            .single()
     }
 
     // read
-    fun getAll(sort: Pair<String,Boolean>? = null, offset: Int? = null, limit: Int? = null): List<DbModelNote> {
-        return notes
-            .apply {
-                when (sort?.first) {
-                    "id" -> if (sort.second) sortBy { it.id } else sortByDescending { it.id }
-                    "title" -> if (sort.second) sortBy { it.title } else sortByDescending { it.title }
-                    "description" -> if (sort.second) sortBy { it.description } else sortByDescending { it.description }
-                }
-            }.drop(if (offset != null && offset >= 0) offset else 0)
-            .run { if (limit != null) take(limit) else this }
+
+    suspend fun getAll(sort: Pair<String,Boolean>? = null, offset: Int? = null, limit: Int? = null): List<DbModelNote> = dbQuery {
+        NoteTable
+            .selectAll()
+            .map { it.toDbModel() }
     }
 
-    fun get(id: Int) = notes.firstOrNull { it.id == id }
+    suspend fun get(id: Int): DbModelNote? = dbQuery {
+        NoteTable
+            .selectAll()
+            .where { NoteTable.id eq id }
+            .map { it.toDbModel() }
+            .singleOrNull()
+    }
 
     // update
-    fun update(note: DbModelNote): Boolean {
-        return notes
-            .indexOfFirst { it.id == note.id }
-            .also { if (it != -1) notes[it] = note }
-            .let { it != -1 }
+
+    suspend fun update(note: DbModelNote): Boolean = dbQuery {
+        NoteTable.update(
+            where = { NoteTable.id eq note.id },
+            body = {
+                it[title] = note.title
+                it[description] = note.description
+                it[updatedAt] = note.updatedAt
+            }) > 0
     }
 
     // delete
-    fun delete(): Boolean {
-        notes.clear()
-        return true
-    }
 
-    fun delete(id: Int?): Boolean {
-        return notes
-            .indexOfFirst { it.id == id }
-            .also { if (it != -1) notes.removeAt(it)}
-            .let { it != -1 }
+    suspend fun delete(id: Int): Boolean = dbQuery {
+        //NoteTable.deleteWhere(op = { NoteTable.id eq id }) > 0
+        false
     }
 }

@@ -36,7 +36,7 @@ fun Route.notesRouting() {
 
             get {
                 call.response.header("Deprecated", "true")
-                call.respond(HttpStatusCode.OK, noteDao.getAll().toRestModelGet())
+                call.respond(noteDao.getAll().toRestModelGet())
             }
 
             get(PARAMETER_ID) {
@@ -44,7 +44,7 @@ fun Route.notesRouting() {
 
                 val note = noteDao.get(id)
                 when (note != null) {
-                    true -> call.respond(HttpStatusCode.OK, note.toRestModelGet())
+                    true -> call.respond(note.toRestModelGet())
                     false -> call.respond(HttpStatusCode.BadRequest, RestModelError("Note not found with given id!"))
                 }
             }
@@ -63,24 +63,17 @@ fun Route.notesRouting() {
                         updatedAt = Date().time
                     }?.apply {
                         noteDao.update(this)
-                        call.respond(HttpStatusCode.OK, noteDao.get(id)!!.toRestModelGet())
+                        call.respond(noteDao.get(id)!!.toRestModelGet())
                     } ?: call.respond(HttpStatusCode.BadRequest, RestModelError("Could not update note!"))
             }
 
             // delete
 
-            delete {
-                when (noteDao.delete()) {
-                    true -> call.respond(HttpStatusCode.OK, noteDao.getAll().toRestModelGet())
-                    false -> call.respond(HttpStatusCode.Conflict, RestModelError("Could not delete all notes!"))
-                }
-            }
-
             delete(PARAMETER_ID) {
                 val id = call.idParameter ?: return@delete call.respond(HttpStatusCode.BadRequest, RestModelError("Invalid id!"))
 
                 when (noteDao.delete(id)) {
-                    true -> call.respond(HttpStatusCode.OK, noteDao.getAll().toRestModelGet())
+                    true -> call.respond(noteDao.getAll().toRestModelGet())
                     false -> call.respond(HttpStatusCode.Conflict, RestModelError("Could not delete note!"))
                 }
             }
@@ -91,7 +84,6 @@ fun Route.notesRouting() {
         route(resource) {
             get {
                 call.respond(
-                    HttpStatusCode.OK,
                     noteDao.getAll(
                         call.sortParameter,
                         call.offsetParameter,
