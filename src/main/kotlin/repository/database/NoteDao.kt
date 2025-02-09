@@ -2,10 +2,12 @@ package com.alex.repository.database
 
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class NoteDao {
 
@@ -41,9 +43,11 @@ class NoteDao {
 
     // read
 
-    suspend fun getAll(sort: Pair<String,Boolean>? = null, offset: Int? = null, limit: Int? = null): List<DbModelNote> = dbQuery {
+    suspend fun getAll(offset: Long?, limit: Int? = null): List<DbModelNote> = dbQuery {
         NoteTable
             .selectAll()
+            .offset(offset ?: 0)
+            .limit(limit ?: 0)
             .map { it.toDbModel() }
     }
 
@@ -70,7 +74,6 @@ class NoteDao {
     // delete
 
     suspend fun delete(id: Int): Boolean = dbQuery {
-        //NoteTable.deleteWhere(op = { NoteTable.id eq id }) > 0
-        false
+        NoteTable.deleteWhere { NoteTable.id eq id } > 0
     }
 }

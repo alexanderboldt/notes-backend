@@ -2,7 +2,6 @@ package com.alex.utils
 
 import io.ktor.server.application.*
 
-const val PARAMETER_ID = "{id}"
 private const val PARAMETER_SORT = "sort"
 private const val PARAMETER_OFFSET = "offset"
 private const val PARAMETER_LIMIT = "limit"
@@ -19,8 +18,8 @@ val ApplicationCall.sortParameter: Pair<String, Boolean>?
             }
         }
 }
-val ApplicationCall.offsetParameter: Int?
-    get() = parameters[PARAMETER_OFFSET]?.toIntOrNull()
+val ApplicationCall.offsetParameter: Long?
+    get() = parameters[PARAMETER_OFFSET]?.toLongOrNull()?.let { if (it < 0) 0 else it }
 
 val ApplicationCall.limitParameter: Int?
     get() = parameters[PARAMETER_LIMIT]?.toIntOrNull()?.let { if (it < 0) 0 else it }

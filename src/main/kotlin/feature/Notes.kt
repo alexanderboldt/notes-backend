@@ -12,86 +12,62 @@ import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.response.*
 import java.util.*
 
-fun Route.notesRouting() {
+fun Route.notesRouting(noteDao: NoteDao) {
 
-    val noteDao = NoteDao()
+    route("api/v1/notes") {
 
-    val pathV1 = "v1"
-    val pathV2 = "v2"
+        // create
 
-    val resource = "notes"
+        post {
+            val note = call.safeReceiveOrNull<RestModelNotePost>()?.toDbModel() ?: throw BadRequestException("Unexpected body-request")
 
-    route(pathV1) {
-        route(resource) {
-
-            // create
-
-            post {
-                val note = call.safeReceiveOrNull<RestModelNotePost>()?.toDbModel() ?: throw BadRequestException("Unexpected body-request")
-
-                call.respond(HttpStatusCode.Created, noteDao.save(note).toRestModelGet())
-            }
-
-            // read
-
-            get {
-                call.response.header("Deprecated", "true")
-                call.respond(noteDao.getAll().toRestModelGet())
-            }
-
-            get(PARAMETER_ID) {
-                val id = call.idParameter ?: throw BadRequestException("Invalid id!")
-
-                val note = noteDao
-                    .get(id)
-                    ?.toRestModelGet()
-                    ?: throw BadRequestException("Invalid id!")
-
-                call.respond(note)
-            }
-
-            // update
-
-            put(PARAMETER_ID) {
-                val note = call.safeReceiveOrNull<RestModelNotePut>() ?: throw BadRequestException("Unexpected body-request!")
-                val id = call.idParameter ?: throw BadRequestException("Invalid id!")
-
-                noteDao
-                    .get(id)
-                    ?.apply {
-                        title = note.title ?: title
-                        description = note.description ?: description
-                        updatedAt = Date().time
-                    }?.apply {
-                        noteDao.update(this)
-                        call.respond(noteDao.get(id)!!.toRestModelGet())
-                    } ?: throw BadRequestException("Could not update note!")
-            }
-
-            // delete
-
-            delete(PARAMETER_ID) {
-                val id = call.idParameter ?: throw BadRequestException("Invalid id!")
-
-                noteDao.get(id) ?: throw BadRequestException("Could not delete note!")
-                noteDao.delete(id)
-
-                call.respond(HttpStatusCode.NoContent)
-            }
+            call.respond(HttpStatusCode.Created, noteDao.save(note).toRestModelGet())
         }
-    }
 
-    route(pathV2) {
-        route(resource) {
-            get {
-                call.respond(
-                    noteDao.getAll(
-                        call.sortParameter,
-                        call.offsetParameter,
-                        call.limitParameter
-                    ).toRestModelGet()
-                )
-            }
+        // read
+
+        get {
+            call.respond(noteDao.getAll(call.offsetParameter, call.limitParameter).toRestModelGet())
+        }
+
+        get("/{id}") {
+            val id = call.idParameter ?: throw BadRequestException("Invalid id!")
+
+            val note = noteDao
+                .get(id)
+                ?.toRestModelGet()
+                ?: throw BadRequestException("Invalid id!")
+
+            call.respond(note)
+        }
+
+        // update
+
+        put("/{id}") {
+            val note = call.safeReceiveOrNull<RestModelNotePut>() ?: throw BadRequestException("Unexpected body-request!")
+            val id = call.idParameter ?: throw BadRequestException("Invalid id!")
+
+            noteDao
+                .get(id)
+                ?.apply {
+                    title = note.title ?: title
+                    description = note.description ?: description
+                    updatedAt = Date().time
+                }?.apply {
+                    noteDao.update(this)
+                    call.respond(noteDao.get(id)!!.toRestModelGet())
+                } ?: throw BadRequestException("Could not update note!")
+        }
+
+        // delete
+
+        delete("/{id}") {
+            val id = call.idParameter ?: throw BadRequestException("Invalid id!")
+
+            noteDao.get(id) ?: throw BadRequestException("Could not delete note!")
+            noteDao.delete(id)
+
+            call.respond(HttpStatusCode.NoContent)
         }
     }
 }
