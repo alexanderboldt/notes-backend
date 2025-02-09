@@ -3,12 +3,12 @@ package com.alex.feature
 import com.alex.repository.database.NoteDao
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.routing.*
-import com.alex.repository.rest.RestModelError
 import com.alex.repository.rest.RestModelNotePost
 import com.alex.repository.rest.RestModelNotePut
 import com.alex.repository.toDbModel
 import com.alex.repository.toRestModelGet
 import com.alex.utils.*
+import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.response.*
 import java.util.*
 
@@ -27,9 +27,9 @@ fun Route.notesRouting() {
             // create
 
             post {
-                val note = call.safeReceiveOrNull<RestModelNotePost>() ?: return@post call.respond(HttpStatusCode.BadRequest, RestModelError("Unexpected body-request"))
+                val note = call.safeReceiveOrNull<RestModelNotePost>()?.toDbModel() ?: throw BadRequestException("Unexpected body-request")
 
-                call.respond(HttpStatusCode.Created, noteDao.save(note.toDbModel()).toRestModelGet())
+                call.respond(HttpStatusCode.Created, noteDao.save(note).toRestModelGet())
             }
 
             // read
@@ -40,20 +40,21 @@ fun Route.notesRouting() {
             }
 
             get(PARAMETER_ID) {
-                val id = call.idParameter ?: return@get call.respond(HttpStatusCode.BadRequest, RestModelError("Invalid id!"))
+                val id = call.idParameter ?: throw BadRequestException("Invalid id!")
 
-                val note = noteDao.get(id)
-                when (note != null) {
-                    true -> call.respond(note.toRestModelGet())
-                    false -> call.respond(HttpStatusCode.BadRequest, RestModelError("Note not found with given id!"))
-                }
+                val note = noteDao
+                    .get(id)
+                    ?.toRestModelGet()
+                    ?: throw BadRequestException("Invalid id!")
+
+                call.respond(note)
             }
 
             // update
 
             put(PARAMETER_ID) {
-                val note = call.safeReceiveOrNull<RestModelNotePut>() ?: return@put call.respond(HttpStatusCode.BadRequest, RestModelError("Unexpected body-request!"))
-                val id = call.idParameter ?: return@put call.respond(HttpStatusCode.BadRequest, RestModelError("Invalid id!"))
+                val note = call.safeReceiveOrNull<RestModelNotePut>() ?: throw BadRequestException("Unexpected body-request!")
+                val id = call.idParameter ?: throw BadRequestException("Invalid id!")
 
                 noteDao
                     .get(id)
@@ -64,18 +65,18 @@ fun Route.notesRouting() {
                     }?.apply {
                         noteDao.update(this)
                         call.respond(noteDao.get(id)!!.toRestModelGet())
-                    } ?: call.respond(HttpStatusCode.BadRequest, RestModelError("Could not update note!"))
+                    } ?: throw BadRequestException("Could not update note!")
             }
 
             // delete
 
             delete(PARAMETER_ID) {
-                val id = call.idParameter ?: return@delete call.respond(HttpStatusCode.BadRequest, RestModelError("Invalid id!"))
+                val id = call.idParameter ?: throw BadRequestException("Invalid id!")
 
-                when (noteDao.delete(id)) {
-                    true -> call.respond(noteDao.getAll().toRestModelGet())
-                    false -> call.respond(HttpStatusCode.Conflict, RestModelError("Could not delete note!"))
-                }
+                noteDao.get(id) ?: throw BadRequestException("Could not delete note!")
+                noteDao.delete(id)
+
+                call.respond(HttpStatusCode.NoContent)
             }
         }
     }
