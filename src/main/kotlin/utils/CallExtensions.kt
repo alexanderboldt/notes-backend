@@ -1,13 +1,20 @@
 package com.alex.utils
 
 import io.ktor.server.application.*
+import io.ktor.server.plugins.BadRequestException
+import io.ktor.server.request.receive
+import io.ktor.util.reflect.typeInfo
 
 private const val PARAMETER_SORT = "sort"
 private const val PARAMETER_OFFSET = "offset"
 private const val PARAMETER_LIMIT = "limit"
 
-val ApplicationCall.idParameter: Int?
-    get() = parameters["id"]?.toIntOrNull()
+val ApplicationCall.idOrThrow: Int
+    get() {
+        return parameters["id"]
+            ?.toIntOrNull()
+            ?: throw BadRequestException(ErrorMessages.INVALID_ID)
+    }
 
 val ApplicationCall.sortParameter: Pair<String, Boolean>?
     get() {
@@ -23,3 +30,9 @@ val ApplicationCall.offsetParameter: Long?
 
 val ApplicationCall.limitParameter: Int?
     get() = parameters[PARAMETER_LIMIT]?.toIntOrNull()?.let { if (it < 0) 0 else it }
+
+suspend inline fun <reified T> ApplicationCall.receiveOrThrow(): T = try {
+    receive(typeInfo<T>())
+} catch (throwable: Exception) {
+    throw BadRequestException(ErrorMessages.BODY_REQUEST)
+}

@@ -19,8 +19,7 @@ fun Route.notesRouting(noteDao: NoteDao) {
         // create
 
         post {
-            val note = call.safeReceiveOrNull<RestModelNotePost>()?.toDbModel() ?: throw BadRequestException("Unexpected body-request")
-
+            val note = call.receiveOrThrow<RestModelNotePost>().toDbModel()
             call.respond(HttpStatusCode.Created, noteDao.save(note).toRestModelGet())
         }
 
@@ -31,12 +30,10 @@ fun Route.notesRouting(noteDao: NoteDao) {
         }
 
         get("/{id}") {
-            val id = call.idParameter ?: throw BadRequestException("Invalid id!")
-
             val note = noteDao
-                .get(id)
+                .get(call.idOrThrow)
                 ?.toRestModelGet()
-                ?: throw BadRequestException("Invalid id!")
+                ?: throw BadRequestException(ErrorMessages.INVALID_ID)
 
             call.respond(note)
         }
@@ -44,8 +41,8 @@ fun Route.notesRouting(noteDao: NoteDao) {
         // update
 
         put("/{id}") {
-            val note = call.safeReceiveOrNull<RestModelNotePut>() ?: throw BadRequestException("Unexpected body-request!")
-            val id = call.idParameter ?: throw BadRequestException("Invalid id!")
+            val note = call.receiveOrThrow<RestModelNotePut>()
+            val id = call.idOrThrow
 
             noteDao
                 .get(id)
@@ -56,16 +53,13 @@ fun Route.notesRouting(noteDao: NoteDao) {
                 }?.apply {
                     noteDao.update(this)
                     call.respond(noteDao.get(id)!!.toRestModelGet())
-                } ?: throw BadRequestException("Could not update note!")
+                } ?: throw BadRequestException(ErrorMessages.UPDATE_FAILED)
         }
 
         // delete
 
         delete("/{id}") {
-            val id = call.idParameter ?: throw BadRequestException("Invalid id!")
-
-            noteDao.get(id) ?: throw BadRequestException("Could not delete note!")
-            noteDao.delete(id)
+            if (!noteDao.delete(call.idOrThrow)) throw BadRequestException(ErrorMessages.INVALID_ID)
 
             call.respond(HttpStatusCode.NoContent)
         }
