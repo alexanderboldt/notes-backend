@@ -4,7 +4,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 
 fun Route.rootRouting() {
-    get("/") {
+    get("api") {
         call.respond("Welcome to the notes-backend.")
     }
 }
