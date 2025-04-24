@@ -28,6 +28,7 @@ dependencies {
     implementation(libs.mysql)
     implementation(libs.exposed.core)
     implementation(libs.exposed.jdbc)
+    implementation(libs.koin)
     implementation(libs.ktor.server.config.yaml)
     implementation(libs.ktor.server.call.logging)
     testImplementation(libs.ktor.server.test.host)

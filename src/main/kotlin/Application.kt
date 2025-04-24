@@ -10,4 +10,5 @@ fun Application.module(testing: Boolean = false) {
     configureSerialization()
     configureLogging()
     configureRouting()
+    configureKoin()
 }

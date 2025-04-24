@@ -4,6 +4,7 @@ ktor-version = "3.1.2"
 logback-version = "1.5.18"
 exposed-version = "0.61.0"
 mysql-version = "8.0.33"
+koin-version = "4.1.0-Beta7"
 
 [libraries]
 ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor-version" }
@@ -16,6 +17,7 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 mysql = { module = "mysql:mysql-connector-java", version.ref = "mysql-version" }
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed-version" }
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed-version" }
+koin = { module = "io.insert-koin:koin-ktor3", version.ref = "koin-version" }
 ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor-version" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor-version" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin-version" }

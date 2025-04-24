@@ -2,7 +2,6 @@ package com.alex
 
 import com.alex.feature.notesRouting
 import com.alex.feature.rootRouting
-import com.alex.repository.database.NoteDao
 import com.alex.repository.rest.RestModelError
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
@@ -20,6 +19,6 @@ fun Application.configureRouting() {
     }
     routing() {
         rootRouting()
-        notesRouting(NoteDao())
+        notesRouting()
     }
 }

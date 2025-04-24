@@ -10,11 +10,14 @@ import com.alex.repository.toRestModelGet
 import com.alex.utils.*
 import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.response.*
+import org.koin.ktor.ext.inject
 import java.util.*
 
-fun Route.notesRouting(noteDao: NoteDao) {
+fun Route.notesRouting() {
 
     route("api/v1/notes") {
+
+        val noteDao: NoteDao by inject()
 
         // create
 
