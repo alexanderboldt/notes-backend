@@ -11,18 +11,6 @@ fun RestModelNotePost.toDbModel() = DbModelNote(0, title, description, Date().ti
 
 // from database to rest
 
-fun List<DbModelNote>.toRestModelGet(): List<RestModelNoteGet> {
-    return map {
-        RestModelNoteGet(
-            it.id,
-            it.title,
-            it.description,
-            it.createdAt,
-            it.updatedAt
-        )
-    }
-}
-
 fun DbModelNote.toRestModelGet(): RestModelNoteGet {
     return RestModelNoteGet(
         id,

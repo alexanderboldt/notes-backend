@@ -29,7 +29,7 @@ fun Route.notesRouting() {
         // read
 
         get {
-            call.respond(noteDao.getAll(call.offsetParameter, call.limitParameter).toRestModelGet())
+            call.respond(noteDao.getAll(call.offsetParameter, call.limitParameter).map { it.toRestModelGet() })
         }
 
         get("/{id}") {
