@@ -1,3 +1,5 @@
+@file:Suppress("UnusedReceiverParameter")
+
 package com.alex.configuration
 
 import com.alex.repository.database.NoteTable
@@ -6,7 +8,7 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
-@Suppress("unsued")
+@Suppress("unused")
 fun Application.configureDatabase() {
     val database = Database.connect(
         url = "jdbc:mysql://localhost:3306/notes",

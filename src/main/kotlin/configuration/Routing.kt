@@ -19,7 +19,7 @@ fun Application.configureRouting() {
             )
         }
     }
-    routing() {
+    routing {
         rootRouting()
         notesRouting()
     }

@@ -10,7 +10,7 @@ import io.ktor.server.application.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-@Suppress("unsued")
+@Suppress("unused")
 fun Application.module(testing: Boolean = false) {
     configureDatabase()
     configureCalls()
