@@ -1,6 +1,6 @@
-package com.alex
+package com.alex.configuration
 
-import com.alex.repository.rest.RestModelError
+import com.alex.domain.Error
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCallPipeline
@@ -12,7 +12,9 @@ fun Application.configureCalls() {
 
     intercept(ApplicationCallPipeline.Call) {
         if (call.request.headers["Client-Secret"] != clientSecret) {
-            call.respond(HttpStatusCode.Unauthorized, RestModelError("Wrong or missing client-secret"))
+            call.respond(HttpStatusCode.Unauthorized,
+                Error(HttpStatusCode.Unauthorized.value, "Wrong or missing client-secret")
+            )
         }
     }
 }

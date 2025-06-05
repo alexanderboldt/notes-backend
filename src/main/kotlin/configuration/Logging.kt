@@ -1,4 +1,4 @@
-package com.alex
+package com.alex.configuration
 
 import io.ktor.server.application.Application
 import io.ktor.server.application.install

@@ -1,4 +1,4 @@
-package com.alex
+package com.alex.configuration
 
 import com.alex.repository.database.NoteDao
 import io.ktor.server.application.Application

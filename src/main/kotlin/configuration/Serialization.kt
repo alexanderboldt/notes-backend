@@ -1,4 +1,4 @@
-package com.alex
+package com.alex.configuration
 
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
