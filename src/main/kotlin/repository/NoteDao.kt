@@ -1,4 +1,4 @@
-package com.alex.repository.database
+package com.alex.repository
 
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.ResultRow
@@ -14,8 +14,8 @@ class NoteDao {
     private suspend fun <T> dbQuery(block: suspend () -> T): T =
         newSuspendedTransaction(Dispatchers.IO) { block() }
 
-    private fun ResultRow.toDbModel(): DbModelNote {
-        return DbModelNote(
+    private fun ResultRow.toEntity(): NoteEntity {
+        return NoteEntity(
             id = this[NoteTable.id],
             title = this[NoteTable.title],
             description = this[NoteTable.description],
@@ -26,7 +26,7 @@ class NoteDao {
 
     // create
 
-    suspend fun save(note: DbModelNote): DbModelNote = dbQuery {
+    suspend fun save(note: NoteEntity): NoteEntity = dbQuery {
         val inserted = NoteTable.insert {
             it[title] = note.title
             it[description] = note.description
@@ -37,31 +37,31 @@ class NoteDao {
         NoteTable
             .selectAll()
             .where { NoteTable.id eq inserted[NoteTable.id] }
-            .map { it.toDbModel() }
+            .map { it.toEntity() }
             .single()
     }
 
     // read
 
-    suspend fun getAll(offset: Long?, limit: Int? = null): List<DbModelNote> = dbQuery {
+    suspend fun getAll(offset: Long?, limit: Int? = null): List<NoteEntity> = dbQuery {
         NoteTable
             .selectAll()
             .offset(offset ?: 0)
             .limit(limit ?: 0)
-            .map { it.toDbModel() }
+            .map { it.toEntity() }
     }
 
-    suspend fun get(id: Int): DbModelNote? = dbQuery {
+    suspend fun get(id: Int): NoteEntity? = dbQuery {
         NoteTable
             .selectAll()
             .where { NoteTable.id eq id }
-            .map { it.toDbModel() }
+            .map { it.toEntity() }
             .singleOrNull()
     }
 
     // update
 
-    suspend fun update(note: DbModelNote): Boolean = dbQuery {
+    suspend fun update(note: NoteEntity): Boolean = dbQuery {
         NoteTable.update(
             where = { NoteTable.id eq note.id },
             body = {

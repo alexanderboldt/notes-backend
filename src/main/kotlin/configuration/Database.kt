@@ -2,7 +2,7 @@
 
 package com.alex.configuration
 
-import com.alex.repository.database.NoteTable
+import com.alex.repository.NoteTable
 import io.ktor.server.application.Application
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils

@@ -1,9 +1,9 @@
-package com.alex.repository.rest
+package com.alex.domain
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RestModelNoteGet(
+data class Note(
     var id: Int,
     var title: String,
     var description: String?,

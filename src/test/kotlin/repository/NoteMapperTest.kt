@@ -1,9 +1,9 @@
 package repository
 
-import com.alex.repository.database.DbModelNote
-import com.alex.repository.rest.RestModelNotePost
-import com.alex.repository.toDbModel
-import com.alex.repository.toRestModelGet
+import com.alex.domain.Note
+import com.alex.repository.NoteEntity
+import com.alex.repository.toDomain
+import com.alex.repository.toEntity
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -12,25 +12,25 @@ class NoteMapperTest {
 
     @Test
     fun `should map rest to database`() {
-        val noteRest = RestModelNotePost("Make Dinner", "Healthy")
-        val noteDb = noteRest.toDbModel()
+        val domain = Note(0, "Make Dinner", "Healthy", 17234824, 17234824)
+        val entity = domain.toEntity()
 
-        assertEquals(0, noteDb.id)
-        assertEquals(noteRest.title, noteDb.title)
-        assertEquals(noteRest.description, noteDb.description)
-        assertNotEquals(0, noteDb.createdAt)
-        assertNotEquals(0, noteDb.updatedAt)
+        assertEquals(0, entity.id)
+        assertEquals(domain.title, entity.title)
+        assertEquals(domain.description, entity.description)
+        assertNotEquals(0, entity.createdAt)
+        assertNotEquals(0, entity.updatedAt)
     }
 
     @Test
     fun `should map database to reset`() {
-        val noteDb = DbModelNote(10, "Make Dinner", "Healthy", 17234824, 17234824)
-        val noteRest = noteDb.toRestModelGet()
+        val entity = NoteEntity(10, "Make Dinner", "Healthy", 17234824, 17234824)
+        val domain = entity.toDomain()
 
-        assertEquals(noteDb.id, noteRest.id)
-        assertEquals(noteDb.title, noteRest.title)
-        assertEquals(noteDb.description, noteRest.description)
-        assertEquals(noteDb.createdAt, noteRest.createdAt)
-        assertEquals(noteDb.updatedAt, noteRest.updatedAt)
+        assertEquals(entity.id, domain.id)
+        assertEquals(entity.title, domain.title)
+        assertEquals(entity.description, domain.description)
+        assertEquals(entity.createdAt, domain.createdAt)
+        assertEquals(entity.updatedAt, domain.updatedAt)
     }
 }

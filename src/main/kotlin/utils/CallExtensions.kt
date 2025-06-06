@@ -5,13 +5,14 @@ import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.request.receive
 import io.ktor.util.reflect.typeInfo
 
+private const val PARAMETER_ID = "id"
 private const val PARAMETER_SORT = "sort"
 private const val PARAMETER_OFFSET = "offset"
 private const val PARAMETER_LIMIT = "limit"
 
 val ApplicationCall.idOrThrow: Int
     get() {
-        return parameters["id"]
+        return parameters[PARAMETER_ID]
             ?.toIntOrNull()
             ?: throw BadRequestException(ErrorMessages.INVALID_ID)
     }
@@ -33,6 +34,6 @@ val ApplicationCall.limitParameter: Int?
 
 suspend inline fun <reified T> ApplicationCall.receiveOrThrow(): T = try {
     receive(typeInfo<T>())
-} catch (throwable: Exception) {
+} catch (_: Exception) {
     throw BadRequestException(ErrorMessages.BODY_REQUEST)
 }

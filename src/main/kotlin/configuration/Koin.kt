@@ -1,6 +1,6 @@
 package com.alex.configuration
 
-import com.alex.repository.database.NoteDao
+import com.alex.repository.NoteDao
 import io.ktor.server.application.Application
 import org.koin.dsl.module
 import org.koin.ktor.plugin.koin

@@ -1,10 +1,10 @@
-package com.alex.repository.database
+package com.alex.repository
 
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Table
 
 @Serializable
-data class DbModelNote(
+data class NoteEntity(
     var id: Int,
     var title: String,
     var description: String?,

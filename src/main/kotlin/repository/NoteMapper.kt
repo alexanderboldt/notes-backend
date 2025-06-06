@@ -1,18 +1,16 @@
 package com.alex.repository
 
-import com.alex.repository.database.DbModelNote
-import com.alex.repository.rest.RestModelNoteGet
-import com.alex.repository.rest.RestModelNotePost
+import com.alex.domain.Note
 import java.util.Date
 
-// from rest to database
+// from domain to entity
 
-fun RestModelNotePost.toDbModel() = DbModelNote(0, title, description, Date().time, Date().time)
+fun Note.toEntity() = NoteEntity(0, title, description, Date().time, Date().time)
 
-// from database to rest
+// from entity to domain
 
-fun DbModelNote.toRestModelGet(): RestModelNoteGet {
-    return RestModelNoteGet(
+fun NoteEntity.toDomain(): Note {
+    return Note(
         id,
         title,
         description,
