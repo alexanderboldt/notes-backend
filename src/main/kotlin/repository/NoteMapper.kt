@@ -9,12 +9,4 @@ fun Note.toEntity() = NoteEntity(0, title, description, Date().time, Date().time
 
 // from entity to domain
 
-fun NoteEntity.toDomain(): Note {
-    return Note(
-        id,
-        title,
-        description,
-        createdAt,
-        updatedAt
-    )
-}
+fun NoteEntity.toDomain() = Note(id, title, description, createdAt, updatedAt)

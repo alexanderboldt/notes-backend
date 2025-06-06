@@ -1,9 +1,5 @@
-package repository
+package com.alex.repository
 
-import com.alex.domain.Note
-import com.alex.repository.NoteEntity
-import com.alex.repository.toDomain
-import com.alex.repository.toEntity
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -11,8 +7,8 @@ import kotlin.test.assertNotEquals
 class NoteMapperTest {
 
     @Test
-    fun `should map rest to database`() {
-        val domain = Note(0, "Make Dinner", "Healthy", 17234824, 17234824)
+    fun `should map domain to entity`() {
+        val domain = Fixtures.Notes.Domain.dinner
         val entity = domain.toEntity()
 
         assertEquals(0, entity.id)
@@ -23,8 +19,8 @@ class NoteMapperTest {
     }
 
     @Test
-    fun `should map database to reset`() {
-        val entity = NoteEntity(10, "Make Dinner", "Healthy", 17234824, 17234824)
+    fun `should map entity to domain`() {
+        val entity = Fixtures.Notes.Entity.dinner
         val domain = entity.toDomain()
 
         assertEquals(entity.id, domain.id)
