@@ -1,42 +1,27 @@
 package feature
 
-import com.alex.configuration.configureKoin
-import com.alex.configuration.configureLogging
-import com.alex.configuration.configureRouting
-import com.alex.configuration.configureSerialization
 import com.alex.domain.Note
-import com.alex.repository.NoteTable
 import io.ktor.client.call.body
+import io.ktor.client.request.delete
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import io.ktor.serialization.kotlinx.json.json
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.testing.ApplicationTestBuilder
-import io.ktor.server.testing.testApplication
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.testcontainers.containers.MySQLContainer
+import io.ktor.client.request.get
+import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
-class NotesTest {
+class NotesTest : BaseTest() {
+
+    // region create
 
     @Test
-    fun `should create a note with valid request`() = testApplication {
-        configureApplication()
-
-        val client = createClient {
-            install(ContentNegotiation) {
-                json()
-            }
-        }
-
-        val response = client.post("/api/v1/notes") {
+    fun `should create a note with valid request`(): Unit = runBlocking {
+        val response = client.post(Routes.Note.MAIN) {
             contentType(ContentType.Application.Json)
             setBody(Fixtures.Notes.Domain.dinner)
         }
@@ -51,31 +36,85 @@ class NotesTest {
         assertNotNull(note.updatedAt)
     }
 
-    private fun ApplicationTestBuilder.configureApplication() {
-        application {
-            // configure the database
-            val mysqlContainer = MySQLContainer("mysql:9.2.0").apply {
-                withDatabaseName("notes")
-                withUsername("admin")
-                withPassword("admin")
-                start()
-            }
+    // endregion
 
-            val database = Database.connect(
-                url = mysqlContainer.jdbcUrl,
-                user = mysqlContainer.username,
-                password = mysqlContainer.password,
-                driver = mysqlContainer.driverClassName
-            )
+    // region read all
 
-            transaction(database) {
-                SchemaUtils.create(NoteTable)
-            }
-
-            configureSerialization()
-            configureLogging()
-            configureRouting()
-            configureKoin()
+    @Test
+    fun `should return an empty list`(): Unit = runBlocking {
+        val response = client.get(Routes.Note.MAIN) {
+            contentType(ContentType.Application.Json)
         }
+
+        val notes = response.body<List<Note>>()
+
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertNotNull(notes)
+        assertTrue(notes.isEmpty())
+    }
+
+    @Test
+    fun `should return a list with one note`(): Unit = runBlocking {
+        postNote(Fixtures.Notes.Domain.dinner)
+
+        val response = client.get(Routes.Note.MAIN) {
+            contentType(ContentType.Application.Json)
+        }
+
+        val notes = response.body<List<Note>>()
+
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertNotNull(notes)
+        assertTrue(notes.isNotEmpty())
+        assertEquals(1, notes.size)
+    }
+
+    @Test
+    fun `should return a list with ten notes`(): Unit = runBlocking {
+        (1..10).forEach { _ ->
+            postNote(Fixtures.Notes.Domain.dinner)
+        }
+
+        val response = client.get(Routes.Note.MAIN) {
+            contentType(ContentType.Application.Json)
+        }
+
+        val notes = response.body<List<Note>>()
+
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertNotNull(notes)
+        assertTrue(notes.isNotEmpty())
+        assertEquals(10, notes.size)
+    }
+
+    // endregion
+
+    // region read delete
+
+    @Test
+    fun `should not delete a note and throw bad-request with invalid id`(): Unit = runBlocking {
+        postNote(Fixtures.Notes.Domain.dinner)
+
+        val response = client.delete(Routes.Note.DETAIL + 100)
+
+        assertEquals(HttpStatusCode.BadRequest, response.status)
+    }
+
+    @Test
+    fun `should delete a note with valid id`(): Unit = runBlocking {
+        val id = postNote(Fixtures.Notes.Domain.dinner)
+
+        val response = client.delete(Routes.Note.DETAIL + id)
+
+        assertEquals(HttpStatusCode.NoContent, response.status)
+    }
+
+    // endregion
+
+    private suspend fun postNote(note: Note): Int {
+        return client.post(Routes.Note.MAIN) {
+            contentType(ContentType.Application.Json)
+            setBody(note)
+        }.body<Note>().id!!
     }
 }

@@ -1,5 +1,6 @@
 package com.alex.feature
 
+import feature.Routes
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.statement.bodyAsText
@@ -17,7 +18,7 @@ class RootTest {
     fun `should throw unauthorized with missing client-secret`() = testApplication {
         configureEnvironment()
 
-        val response = client.get("/api")
+        val response = client.get(Routes.ROOT)
 
         assertEquals(HttpStatusCode.Companion.Unauthorized, response.status)
     }
@@ -26,7 +27,7 @@ class RootTest {
     fun `should return valid response with client-secret`() = testApplication {
         configureEnvironment()
 
-        val response = client.get("/api") {
+        val response = client.get(Routes.ROOT) {
             header("Client-Secret", "e4bbe5b7a4c1eb55652965aee885dd59bd2ee7f4")
         }
 

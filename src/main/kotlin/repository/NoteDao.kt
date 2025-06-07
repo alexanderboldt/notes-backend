@@ -46,8 +46,8 @@ class NoteDao {
     suspend fun getAll(offset: Long?, limit: Int? = null): List<NoteEntity> = dbQuery {
         NoteTable
             .selectAll()
-            .offset(offset ?: 0)
-            .limit(limit ?: 0)
+            //.offset(offset ?: 0)
+            //.limit(limit ?: 0)
             .map { it.toEntity() }
     }
 
