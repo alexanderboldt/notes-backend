@@ -10,10 +10,14 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.client.request.get
 import kotlinx.coroutines.runBlocking
+import strikt.api.expectThat
+import strikt.assertions.hasSize
+import strikt.assertions.isEmpty
+import strikt.assertions.isEqualTo
+import strikt.assertions.isNotEmpty
+import strikt.assertions.isNotEqualTo
+import strikt.assertions.isNotNull
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class NotesTest : BaseTest() {
 
@@ -28,12 +32,12 @@ class NotesTest : BaseTest() {
 
         val note = response.body<Note>()
 
-        assertEquals(HttpStatusCode.Created, response.status)
-        assertNotNull(note.id)
-        assertEquals(Fixtures.Notes.Domain.dinner.title, note.title)
-        assertEquals(Fixtures.Notes.Domain.dinner.description, note.description)
-        assertNotNull(note.createdAt)
-        assertNotNull(note.updatedAt)
+        expectThat(response.status).isEqualTo(HttpStatusCode.Created)
+        expectThat(note.id).isNotNull()
+        expectThat(note.title).isEqualTo(Fixtures.Notes.Domain.dinner.title)
+        expectThat(note.description).isEqualTo(Fixtures.Notes.Domain.dinner.description)
+        expectThat(note.createdAt).isNotEqualTo(0)
+        expectThat(note.updatedAt).isNotEqualTo(0)
     }
 
     // endregion
@@ -48,9 +52,8 @@ class NotesTest : BaseTest() {
 
         val notes = response.body<List<Note>>()
 
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertNotNull(notes)
-        assertTrue(notes.isEmpty())
+        expectThat(response.status).isEqualTo(HttpStatusCode.OK)
+        expectThat(notes).isEmpty()
     }
 
     @Test
@@ -63,10 +66,9 @@ class NotesTest : BaseTest() {
 
         val notes = response.body<List<Note>>()
 
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertNotNull(notes)
-        assertTrue(notes.isNotEmpty())
-        assertEquals(1, notes.size)
+        expectThat(response.status).isEqualTo(HttpStatusCode.OK)
+        expectThat(notes).isNotEmpty()
+        expectThat(notes).hasSize(1)
     }
 
     @Test
@@ -81,10 +83,9 @@ class NotesTest : BaseTest() {
 
         val notes = response.body<List<Note>>()
 
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertNotNull(notes)
-        assertTrue(notes.isNotEmpty())
-        assertEquals(10, notes.size)
+        expectThat(response.status).isEqualTo(HttpStatusCode.OK)
+        expectThat(notes).isNotEmpty()
+        expectThat(notes).hasSize(10)
     }
 
     // endregion
@@ -97,7 +98,7 @@ class NotesTest : BaseTest() {
 
         val response = client.delete(Routes.Note.DETAIL + 100)
 
-        assertEquals(HttpStatusCode.BadRequest, response.status)
+        expectThat(response.status).isEqualTo(HttpStatusCode.BadRequest)
     }
 
     @Test
@@ -106,7 +107,7 @@ class NotesTest : BaseTest() {
 
         val response = client.delete(Routes.Note.DETAIL + id)
 
-        assertEquals(HttpStatusCode.NoContent, response.status)
+        expectThat(response.status).isEqualTo(HttpStatusCode.NoContent)
     }
 
     // endregion

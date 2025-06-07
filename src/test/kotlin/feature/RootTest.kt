@@ -8,9 +8,10 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
+import strikt.api.expectThat
+import strikt.assertions.isEqualTo
+import strikt.assertions.isNotBlank
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 class RootTest {
 
@@ -20,7 +21,7 @@ class RootTest {
 
         val response = client.get(Routes.ROOT)
 
-        assertEquals(HttpStatusCode.Companion.Unauthorized, response.status)
+        expectThat(response.status).isEqualTo(HttpStatusCode.Companion.Unauthorized)
     }
 
     @Test
@@ -31,8 +32,8 @@ class RootTest {
             header("Client-Secret", "e4bbe5b7a4c1eb55652965aee885dd59bd2ee7f4")
         }
 
-        assertEquals(HttpStatusCode.Companion.OK, response.status)
-        assertNotNull(response.bodyAsText())
+        expectThat(response.status).isEqualTo(HttpStatusCode.Companion.OK)
+        expectThat(response.bodyAsText()).isNotBlank()
     }
 
     private fun ApplicationTestBuilder.configureEnvironment() {
