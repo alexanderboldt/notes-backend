@@ -6,8 +6,12 @@ import com.alex.configuration.configureRouting
 import com.alex.configuration.configureSerialization
 import com.alex.repository.NoteTable
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.testing.TestApplication
+import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -43,7 +47,17 @@ open class BaseTest {
         }
     }.createClient {
         install(ContentNegotiation) {
-            json()
+            json(
+                Json {
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                    explicitNulls = false
+                }
+            )
+        }
+
+        defaultRequest {
+            contentType(ContentType.Application.Json)
         }
     }
 }
