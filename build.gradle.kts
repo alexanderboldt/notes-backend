@@ -19,6 +19,7 @@ repositories {
 }
 
 dependencies {
+    // development libraries
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.server.netty)
