@@ -1,7 +1,20 @@
 # Notes-Backend
 
-This is a backend application for managing simple notes.
+This is a backend application for managing notes.
 
-## Technologies
+## Tech-Stack
 
-Uses Kotlin, Ktor, Kotlinx-Serialization, Exposed, Koin, MySql and Gradle.
+### Development
+- Kotlin
+- Ktor
+- Kotlinx-Serialization
+- Exposed
+- Koin
+- MySql
+
+### Test
+- Strikt
+- Docker-Testcontainer
+
+### Buildsystem
+- Gradle
