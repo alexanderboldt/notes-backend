@@ -25,10 +25,10 @@ class NoteMapperTest {
         val entity = Fixtures.Notes.Entity.dinner
         val domain = entity.toDomain()
 
-        expectThat(domain.id).isNotNull().isEqualTo(entity.id)
+        expectThat(domain.id).isEqualTo(entity.id)
         expectThat(domain.title).isEqualTo(entity.title)
         expectThat(domain.description).isNotNull().isEqualTo(entity.description)
-        expectThat(domain.createdAt).isNotNull().isEqualTo(entity.createdAt)
-        expectThat(domain.updatedAt).isNotNull().isEqualTo(entity.updatedAt)
+        expectThat(domain.createdAt).isEqualTo(entity.createdAt)
+        expectThat(domain.updatedAt).isEqualTo(entity.updatedAt)
     }
 }

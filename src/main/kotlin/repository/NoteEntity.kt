@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.Table
 
 @Serializable
 data class NoteEntity(
-    var id: Int,
+    var id: Int = 0,
     var title: String,
     var description: String?,
     var createdAt: Long,

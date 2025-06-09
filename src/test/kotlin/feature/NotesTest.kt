@@ -15,7 +15,6 @@ import strikt.assertions.isEmpty
 import strikt.assertions.isEqualTo
 import strikt.assertions.isGreaterThan
 import strikt.assertions.isNotEmpty
-import strikt.assertions.isNotNull
 import kotlin.test.Test
 
 class NotesTest : BaseTest() {
@@ -151,14 +150,14 @@ class NotesTest : BaseTest() {
     private suspend fun postNote(note: Note): Int {
         return client.post(Routes.Note.MAIN) {
             setBody(note)
-        }.body<Note>().id!!
+        }.body<Note>().id
     }
 
     private fun Note.isNote(expected: Note) {
-        expectThat(id).isNotNull().isGreaterThan(0)
+        expectThat(id).isGreaterThan(0)
         expectThat(title).isEqualTo(expected.title)
         expectThat(description).isEqualTo(expected.description)
-        expectThat(createdAt).isNotNull().isGreaterThan(0)
-        expectThat(updatedAt).isNotNull().isGreaterThan(0)
+        expectThat(createdAt).isGreaterThan(0)
+        expectThat(updatedAt).isGreaterThan(0)
     }
 }

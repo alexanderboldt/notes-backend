@@ -5,7 +5,7 @@ import java.util.Date
 
 // from domain to entity
 
-fun Note.toEntity() = NoteEntity(0, title, description, Date().time, Date().time)
+fun Note.toEntity() = NoteEntity(title = title, description = description, createdAt = Date().time, updatedAt = Date().time)
 
 // from entity to domain
 
