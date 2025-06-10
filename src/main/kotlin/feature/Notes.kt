@@ -13,7 +13,6 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.util.getOrFail
 import org.koin.ktor.ext.inject
-import java.util.*
 
 fun Route.notesRouting() {
 
@@ -25,6 +24,7 @@ fun Route.notesRouting() {
 
         post {
             val note = call.receive<Note>().toEntity()
+
             call.respond(HttpStatusCode.Created, noteDao.save(note).toDomain())
         }
 
@@ -32,6 +32,7 @@ fun Route.notesRouting() {
 
         get {
             val sort = call.queryParameters["sort"]?.convertToSort(NoteTable.columns)
+
             call.respond(noteDao.getAll(sort).map { it.toDomain() })
         }
 
@@ -50,22 +51,20 @@ fun Route.notesRouting() {
             val note = call.receive<Note>()
             val id = call.pathParameters.getOrFail<Int>("id")
 
-            noteDao
-                .get(id)
-                ?.apply {
-                    title = note.title
-                    description = note.description ?: description
-                    updatedAt = Date().time
-                }?.apply {
-                    noteDao.update(this)
-                    call.respond(noteDao.get(id)!!.toDomain())
-                } ?: throw BadRequestException(ErrorMessages.UPDATE_FAILED)
+            val noteUpdated = noteDao
+                .update(note.toEntity().copy(id = id))
+                ?.toDomain()
+                ?: throw BadRequestException(ErrorMessages.UPDATE_FAILED)
+
+            call.respond(noteUpdated)
         }
 
         // delete
 
         delete("/{id}") {
-            if (!noteDao.delete(call.pathParameters.getOrFail<Int>("id"))) throw BadRequestException(ErrorMessages.INVALID_ID)
+            if (!noteDao.delete(call.pathParameters.getOrFail<Int>("id"))) {
+                throw BadRequestException(ErrorMessages.INVALID_ID)
+            }
 
             call.respond(HttpStatusCode.NoContent)
         }

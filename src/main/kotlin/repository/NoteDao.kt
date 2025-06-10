@@ -10,21 +10,20 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import java.util.Date
 
 class NoteDao {
 
     private suspend fun <T> dbQuery(block: suspend () -> T): T =
         newSuspendedTransaction(Dispatchers.IO) { block() }
 
-    private fun ResultRow.toEntity(): NoteEntity {
-        return NoteEntity(
-            id = this[NoteTable.id],
-            title = this[NoteTable.title],
-            description = this[NoteTable.description],
-            createdAt = this[NoteTable.createdAt],
-            updatedAt = this[NoteTable.updatedAt]
-        )
-    }
+    private fun ResultRow.toEntity() = NoteEntity(
+        id = this[NoteTable.id],
+        title = this[NoteTable.title],
+        description = this[NoteTable.description],
+        createdAt = this[NoteTable.createdAt],
+        updatedAt = this[NoteTable.updatedAt]
+    )
 
     // create
 
@@ -62,14 +61,19 @@ class NoteDao {
 
     // update
 
-    suspend fun update(note: NoteEntity): Boolean = dbQuery {
-        NoteTable.update(
+    suspend fun update(note: NoteEntity): NoteEntity? = dbQuery {
+        val couldUpdateNote = NoteTable.update(
             where = { NoteTable.id eq note.id },
             body = {
                 it[title] = note.title
                 it[description] = note.description
-                it[updatedAt] = note.updatedAt
+                it[updatedAt] = Date().time
             }) > 0
+
+        when (couldUpdateNote) {
+            true -> get(note.id)
+            false -> null
+        }
     }
 
     // delete
