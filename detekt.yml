@@ -1,0 +1,4 @@
+style:
+  ThrowsCount:
+    active: true
+    max: 3

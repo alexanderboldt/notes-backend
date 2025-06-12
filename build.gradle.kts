@@ -2,9 +2,11 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktor)
     alias(libs.plugins.kotlin.plugin.serialization)
+
+    id("io.gitlab.arturbosch.detekt") version("1.23.8")
 }
 
-group = "com.alex"
+group = "org.alex.notes"
 version = "0.0.1"
 
 application {
@@ -12,6 +14,11 @@ application {
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
+}
+
+detekt {
+    config.setFrom("detekt.yml")
+    buildUponDefaultConfig = true
 }
 
 repositories {
