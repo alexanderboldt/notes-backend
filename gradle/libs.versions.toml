@@ -7,6 +7,7 @@ mysql-version = "8.0.33"
 koin-version = "4.1.0-Beta8"
 strikt-version = "0.35.1"
 testcontainers-version = "1.21.1"
+detekt-version = "1.23.8"
 
 [libraries]
 # development libraries
@@ -35,3 +36,4 @@ testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", ve
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor-version" }
 kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt-version" }

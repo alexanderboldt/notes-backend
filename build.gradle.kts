@@ -2,8 +2,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktor)
     alias(libs.plugins.kotlin.plugin.serialization)
-
-    id("io.gitlab.arturbosch.detekt") version("1.23.8")
+    alias(libs.plugins.detekt)
 }
 
 group = "org.alex.notes"
