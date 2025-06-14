@@ -18,3 +18,6 @@ This is a backend application for managing notes.
 
 ### Buildsystem
 - Gradle
+
+### Code Analysis
+- Detekt
