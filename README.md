@@ -9,6 +9,7 @@ This is a backend application for managing notes.
 - Ktor
 - Kotlinx-Serialization
 - Exposed
+- Keycloak
 - Koin
 - MySql
 
