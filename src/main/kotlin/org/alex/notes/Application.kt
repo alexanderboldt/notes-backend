@@ -1,6 +1,7 @@
 package org.alex.notes
 
 import io.ktor.server.application.Application
+import org.alex.notes.configuration.configureAuthentication
 import org.alex.notes.configuration.configureCalls
 import org.alex.notes.configuration.configureDatabase
 import org.alex.notes.configuration.configureKoin
@@ -16,6 +17,7 @@ fun Application.module(testing: Boolean = false) {
     configureCalls()
     configureSerialization()
     configureLogging()
+    configureAuthentication()
     configureRouting()
     configureKoin()
 }
