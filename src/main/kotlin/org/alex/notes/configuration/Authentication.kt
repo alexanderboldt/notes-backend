@@ -6,13 +6,14 @@ import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
+import io.ktor.server.config.property
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
 const val AUTHENTICATION_JWT = "auth-jwt"
 
 fun Application.configureAuthentication() {
-    val issuer = environment.config.property("jwt.issuer-uri").getString()
+    val issuer = property<String>("jwt.issuer-uri")
 
     install(Authentication) {
         jwt(AUTHENTICATION_JWT) {
