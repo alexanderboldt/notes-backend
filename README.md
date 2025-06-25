@@ -14,7 +14,7 @@ This is a backend application for managing notes.
 - MySql
 
 ### Test
-- Strikt
+- Kotest
 - Docker-Testcontainer
 
 ### Buildsystem
