@@ -1,5 +1,10 @@
 package org.alex.notes.feature
 
+import io.kotest.assertions.ktor.client.shouldHaveStatus
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.comparables.shouldBeGreaterThan
+import io.kotest.matchers.shouldBe
 import org.alex.notes.domain.Note
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
@@ -8,58 +13,64 @@ import io.ktor.client.request.setBody
 import io.ktor.http.HttpStatusCode
 import io.ktor.client.request.get
 import io.ktor.client.request.put
-import kotlinx.coroutines.runBlocking
 import org.alex.notes.Fixtures
-import strikt.api.expectThat
-import strikt.assertions.hasSize
-import strikt.assertions.isEmpty
-import strikt.assertions.isEqualTo
-import strikt.assertions.isGreaterThan
-import strikt.assertions.isNotEmpty
-import kotlin.test.Test
+import org.alex.notes.repository.NoteDao
 
-class NotesTest : BaseTest() {
+class NotesTest : StringSpec({
 
     // region create
 
-    @Test
-    fun `should create a note with valid request`(): Unit = runBlocking {
+    afterTest {
+        NoteDao().deleteAll()
+    }
+
+    suspend fun postNote(note: Note): Int {
+        return client.post(Routes.Note.MAIN) {
+            setBody(note)
+        }.body<Note>().id
+    }
+
+    infix fun Note.shouldBeNote(expected: Note) {
+        id shouldBeGreaterThan 0
+        title shouldBe expected.title
+        description shouldBe expected.description
+        createdAt shouldBeGreaterThan 0
+        updatedAt shouldBeGreaterThan 0
+    }
+    
+    "should create a note with valid request" {
         val response = client.post(Routes.Note.MAIN) {
             setBody(Fixtures.Notes.Domain.dinner)
         }
         val note = response.body<Note>()
 
-        expectThat(response.status).isEqualTo(HttpStatusCode.Created)
-        note.isNote(Fixtures.Notes.Domain.dinner)
+        response shouldHaveStatus HttpStatusCode.Created
+        note shouldBeNote Fixtures.Notes.Domain.dinner
     }
 
     // endregion
 
     // region read all
 
-    @Test
-    fun `should return an empty list`(): Unit = runBlocking {
+    "should return an empty list" {
         val response = client.get(Routes.Note.MAIN)
         val notes = response.body<List<Note>>()
 
-        expectThat(response.status).isEqualTo(HttpStatusCode.OK)
-        expectThat(notes).isEmpty()
+        response shouldHaveStatus HttpStatusCode.OK
+        notes shouldBe emptyList()
     }
 
-    @Test
-    fun `should return a list with one note`(): Unit = runBlocking {
+    "should return a list with one note" {
         postNote(Fixtures.Notes.Domain.dinner)
 
         val response = client.get(Routes.Note.MAIN)
         val notes = response.body<List<Note>>()
 
-        expectThat(response.status).isEqualTo(HttpStatusCode.OK)
-        expectThat(notes).isNotEmpty()
-        expectThat(notes).hasSize(1)
+        response shouldHaveStatus HttpStatusCode.OK
+        notes shouldHaveSize 1
     }
 
-    @Test
-    fun `should return a list with ten notes`(): Unit = runBlocking {
+    "should return a list with ten notes" {
         (1..10).forEach { _ ->
             postNote(Fixtures.Notes.Domain.dinner)
         }
@@ -67,52 +78,47 @@ class NotesTest : BaseTest() {
         val response = client.get(Routes.Note.MAIN)
         val notes = response.body<List<Note>>()
 
-        expectThat(response.status).isEqualTo(HttpStatusCode.OK)
-        expectThat(notes).isNotEmpty()
-        expectThat(notes).hasSize(10)
+        response shouldHaveStatus HttpStatusCode.OK
+        notes shouldHaveSize 10
     }
 
     // endregion
 
     // region read one
 
-    @Test
-    fun `should throw bad-request with invalid id`(): Unit = runBlocking {
+    "should throw bad-request with invalid id" {
         postNote(Fixtures.Notes.Domain.dinner)
 
         val response = client.get(Routes.Note.DETAIL + 100)
 
-        expectThat(response.status).isEqualTo(HttpStatusCode.BadRequest)
+        response shouldHaveStatus HttpStatusCode.BadRequest
     }
 
-    @Test
-    fun `should return one note with valid id`(): Unit = runBlocking {
+    "should return one note with valid id" {
         val id = postNote(Fixtures.Notes.Domain.dinner)
 
         val response = client.get(Routes.Note.DETAIL + id)
         val note = response.body<Note>()
 
-        expectThat(response.status).isEqualTo(HttpStatusCode.OK)
-        note.isNote(Fixtures.Notes.Domain.dinner)
+        response shouldHaveStatus HttpStatusCode.OK
+        note shouldBeNote Fixtures.Notes.Domain.dinner
     }
 
     // endregion
 
     // region update
 
-    @Test
-    fun `should not update a note and throw a bad-request with invalid id`(): Unit = runBlocking {
+    "should not update a note and throw a bad-request with invalid id" {
         postNote(Fixtures.Notes.Domain.dinner)
 
         val response = client.put(Routes.Note.DETAIL + 100) {
             setBody(Fixtures.Notes.Domain.shopping)
         }
 
-        expectThat(response.status).isEqualTo(HttpStatusCode.BadRequest)
+        response shouldHaveStatus HttpStatusCode.BadRequest
     }
 
-    @Test
-    fun `should update a note with valid id`(): Unit = runBlocking {
+    "should update a note with valid id" {
         val id = postNote(Fixtures.Notes.Domain.dinner)
 
         val response = client.put(Routes.Note.DETAIL + id) {
@@ -120,45 +126,29 @@ class NotesTest : BaseTest() {
         }
         val note = response.body<Note>()
 
-        expectThat(response.status).isEqualTo(HttpStatusCode.OK)
-        note.isNote(Fixtures.Notes.Domain.shopping)
+        response shouldHaveStatus HttpStatusCode.OK
+        note shouldBeNote Fixtures.Notes.Domain.shopping
     }
 
     // endregion
 
     // region delete
 
-    @Test
-    fun `should not delete a note and throw bad-request with invalid id`(): Unit = runBlocking {
+    "should not delete a note and throw bad-request with invalid id" {
         postNote(Fixtures.Notes.Domain.dinner)
 
         val response = client.delete(Routes.Note.DETAIL + 100)
 
-        expectThat(response.status).isEqualTo(HttpStatusCode.BadRequest)
+        response shouldHaveStatus HttpStatusCode.BadRequest
     }
 
-    @Test
-    fun `should delete a note with valid id`(): Unit = runBlocking {
+    "should delete a note with valid id" {
         val id = postNote(Fixtures.Notes.Domain.dinner)
 
         val response = client.delete(Routes.Note.DETAIL + id)
 
-        expectThat(response.status).isEqualTo(HttpStatusCode.NoContent)
+        response shouldHaveStatus HttpStatusCode.NoContent
     }
 
     // endregion
-
-    private suspend fun postNote(note: Note): Int {
-        return client.post(Routes.Note.MAIN) {
-            setBody(note)
-        }.body<Note>().id
-    }
-
-    private fun Note.isNote(expected: Note) {
-        expectThat(id).isGreaterThan(0)
-        expectThat(title).isEqualTo(expected.title)
-        expectThat(description).isEqualTo(expected.description)
-        expectThat(createdAt).isGreaterThan(0)
-        expectThat(updatedAt).isGreaterThan(0)
-    }
-}
+})

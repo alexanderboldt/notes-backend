@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.deleteAll
 import java.util.Date
 
 class NoteDao {
@@ -81,5 +82,9 @@ class NoteDao {
 
     suspend fun delete(id: Int): Boolean = dbQuery {
         NoteTable.deleteWhere { NoteTable.id eq id } > 0
+    }
+
+    suspend fun deleteAll() = dbQuery {
+        NoteTable.deleteAll()
     }
 }

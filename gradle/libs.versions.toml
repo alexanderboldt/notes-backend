@@ -5,7 +5,8 @@ logback-version = "1.5.18"
 exposed-version = "0.61.0"
 mysql-version = "8.0.33"
 koin-version = "4.1.0"
-strikt-version = "0.35.1"
+kotest-version = "5.9.1"
+kotest-ktor-version = "2.0.0"
 testcontainers-version = "1.21.1"
 detekt-version = "1.23.8"
 
@@ -33,9 +34,9 @@ koin = { module = "io.insert-koin:koin-ktor", version.ref = "koin-version" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor-version" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor-version" }
 
-kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin-version" }
-
-strikt = { module = "io.strikt:strikt-core", version.ref = "strikt-version" }
+kotest-runner-junit = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest-version" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest-version" }
+kotest-assertions-ktor = { module = "io.kotest.extensions:kotest-assertions-ktor", version.ref = "kotest-ktor-version" }
 
 testcontainers-mysql = { module = "org.testcontainers:mysql", version.ref = "testcontainers-version" }
 testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers-version" }

@@ -24,6 +24,10 @@ repositories {
     mavenCentral()
 }
 
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
 dependencies {
     // development libraries
     implementation(libs.ktor.server.core)
@@ -48,9 +52,9 @@ dependencies {
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.ktor.client.content.negotiation)
 
-    testImplementation(libs.kotlin.test.junit)
-
-    testImplementation(libs.strikt)
+    testImplementation(libs.kotest.runner.junit)
+    testImplementation(libs.kotest.assertions.core)
+    testImplementation(libs.kotest.assertions.ktor)
 
     testImplementation(libs.testcontainers.mysql)
     testImplementation(libs.testcontainers.junit.jupiter)

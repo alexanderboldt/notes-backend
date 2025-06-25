@@ -1,78 +1,78 @@
 package org.alex.notes.utils
 
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.inspectors.forExactly
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
 import org.alex.notes.repository.NoteTable
 import org.jetbrains.exposed.sql.SortOrder
-import strikt.api.expectThat
-import strikt.assertions.hasSize
-import strikt.assertions.isEmpty
-import strikt.assertions.isEqualTo
-import strikt.assertions.isNotEmpty
-import kotlin.test.Test
+import kotlin.collections.emptyList
 
-class SortExtensionsTest {
+class SortExtensionsTest : StringSpec ({
 
-    @Test
-    fun `should convert empty string to empty list`() {
+    "convert empty string to empty list" {
         val sort = "".convertToSort(NoteTable.columns)
 
-        expectThat(sort).isEmpty()
+        sort shouldBe emptyList()
     }
-
-    @Test
-    fun `should convert string with just a comma to empty list`() {
+    
+    "should convert string with just a comma to empty list" {
         val sort = ",".convertToSort(NoteTable.columns)
 
-        expectThat(sort).isEmpty()
+        sort shouldBe emptyList()
     }
-
-    @Test
-    fun `should convert sort parameter with unknown value empty list`() {
+    
+    "should convert sort parameter with unknown value empty list" {
         val sort = "number".convertToSort(NoteTable.columns)
 
-        expectThat(sort).isEmpty()
+        sort shouldBe emptyList()
     }
-
-    @Test
-    fun `should convert sort parameter with id asc to valid list`() {
+    
+    "should convert sort parameter with id asc to valid list" {
         val sort = "id".convertToSort(NoteTable.columns)
 
-        expectThat(sort).isNotEmpty()
-        expectThat(sort).hasSize(1)
-        expectThat(sort[0].first).isEqualTo(NoteTable.id)
-        expectThat(sort[0].second).isEqualTo(SortOrder.ASC)
+        sort shouldHaveSize 1
+        sort.forExactly(1) {
+            it.first shouldBe NoteTable.id
+            it.second shouldBe SortOrder.ASC
+        }
     }
-
-    @Test
-    fun `should convert sort parameter with id desc to valid list`() {
+    
+    "should convert sort parameter with id desc to valid list" {
         val sort = "-id".convertToSort(NoteTable.columns)
 
-        expectThat(sort).isNotEmpty()
-        expectThat(sort).hasSize(1)
-        expectThat(sort[0].first).isEqualTo(NoteTable.id)
-        expectThat(sort[0].second).isEqualTo(SortOrder.DESC)
+        sort shouldHaveSize 1
+        sort.forExactly(1) {
+            it.first shouldBe NoteTable.id
+            it.second shouldBe SortOrder.DESC
+        }
     }
-
-    @Test
-    fun `should convert sort parameter with id desc and title asc to valid list`() {
+    
+    "should convert sort parameter with id desc and title asc to valid list" {
         val sort = "-id,title".convertToSort(NoteTable.columns)
 
-        expectThat(sort).isNotEmpty()
-        expectThat(sort).hasSize(2)
-        expectThat(sort[0].first).isEqualTo(NoteTable.id)
-        expectThat(sort[0].second).isEqualTo(SortOrder.DESC)
-        expectThat(sort[1].first).isEqualTo(NoteTable.title)
-        expectThat(sort[1].second).isEqualTo(SortOrder.ASC)
+        sort shouldHaveSize 2
+        sort[0].apply {
+            first shouldBe NoteTable.id
+            second shouldBe SortOrder.DESC
+        }
+        sort[1].apply {
+            first shouldBe NoteTable.title
+            second shouldBe SortOrder.ASC
+        }
     }
-
-    @Test
-    fun `should convert sort parameter with containing unknown value to valid list`() {
+    
+    "should convert sort parameter with containing unknown value to valid list" {
         val sort = "-id,number,-title".convertToSort(NoteTable.columns)
 
-        expectThat(sort).isNotEmpty()
-        expectThat(sort).hasSize(2)
-        expectThat(sort[0].first).isEqualTo(NoteTable.id)
-        expectThat(sort[0].second).isEqualTo(SortOrder.DESC)
-        expectThat(sort[1].first).isEqualTo(NoteTable.title)
-        expectThat(sort[1].second).isEqualTo(SortOrder.DESC)
+        sort shouldHaveSize 2
+        sort[0].apply {
+            first shouldBe NoteTable.id
+            second shouldBe SortOrder.DESC
+        }
+        sort[1].apply {
+            first shouldBe NoteTable.title
+            second shouldBe SortOrder.DESC
+        }
     }
-}
+})
