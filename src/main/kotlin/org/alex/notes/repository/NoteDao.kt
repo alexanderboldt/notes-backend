@@ -18,6 +18,14 @@ class NoteDao {
     private suspend fun <T> dbQuery(block: suspend () -> T): T =
         newSuspendedTransaction(Dispatchers.IO) { block() }
 
+    private fun getSingleNoteOrNull(id: Int): NoteEntity? {
+        return NoteTable
+            .selectAll()
+            .where { NoteTable.id eq id }
+            .map { it.toEntity() }
+            .singleOrNull()
+    }
+
     private fun ResultRow.toEntity() = NoteEntity(
         id = this[NoteTable.id],
         title = this[NoteTable.title],
@@ -36,11 +44,7 @@ class NoteDao {
             it[updatedAt] = note.updatedAt
         }
 
-        NoteTable
-            .selectAll()
-            .where { NoteTable.id eq inserted[NoteTable.id] }
-            .map { it.toEntity() }
-            .single()
+        getSingleNoteOrNull(inserted[NoteTable.id])!!
     }
 
     // read
@@ -54,11 +58,7 @@ class NoteDao {
     }
 
     suspend fun get(id: Int): NoteEntity? = dbQuery {
-        NoteTable
-            .selectAll()
-            .where { NoteTable.id eq id }
-            .map { it.toEntity() }
-            .singleOrNull()
+        getSingleNoteOrNull(id)
     }
 
     // update
@@ -73,7 +73,7 @@ class NoteDao {
             }) > 0
 
         when (couldUpdateNote) {
-            true -> get(note.id)
+            true -> getSingleNoteOrNull(note.id)
             false -> null
         }
     }
