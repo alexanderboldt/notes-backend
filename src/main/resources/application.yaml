@@ -6,5 +6,4 @@ ktor:
         port: 9000
 
 jwt:
-    secret: "e4bbe5b7a4c1eb55652965aee885dd59bd2ee7f4"
     issuer-uri: http://localhost:8080/realms/notes
