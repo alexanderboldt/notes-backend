@@ -3,7 +3,7 @@ ktor:
         modules:
           - org.alex.notes.ApplicationKt.module
     deployment:
-        port: 9000
+        port: 4000
 
 jwt:
     issuer-uri: http://localhost:8080/realms/notes

@@ -1,0 +1,21 @@
+services:
+  mysql:
+    image: mysql:9.4.0
+    environment:
+      MYSQL_DATABASE: notes
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_ROOT_PASSWORD: admin
+    ports:
+      - 127.0.0.1:3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend
+
+volumes:
+  mysql_data:
+
+networks:
+  backend:
+    driver: bridge
