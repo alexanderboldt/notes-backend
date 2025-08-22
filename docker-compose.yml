@@ -2,12 +2,12 @@ services:
   mysql:
     image: mysql:9.4.0
     environment:
-      MYSQL_DATABASE: notes
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin
-      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: ${DB}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     ports:
-      - 127.0.0.1:3306:3306
+      - ${DB_PORT}:3306
     volumes:
       - mysql_data:/var/lib/mysql
     networks:

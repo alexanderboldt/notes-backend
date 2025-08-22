@@ -13,11 +13,11 @@ import java.util.concurrent.TimeUnit
 const val AUTHENTICATION_JWT = "auth-jwt"
 
 fun Application.configureAuthentication() {
-    val issuer = property<String>("jwt.issuer-uri")
+    val issuer = property<String>("jwt.issuer")
 
     install(Authentication) {
         jwt(AUTHENTICATION_JWT) {
-            val jwkProvider = JwkProviderBuilder(URL("$issuer/protocol/openid-connect/certs"))
+            val jwkProvider = JwkProviderBuilder(URL(issuer))
                 .cached(10, 24, TimeUnit.HOURS)
                 .rateLimited(10, 1, TimeUnit.MINUTES)
                 .build()

@@ -1,9 +1,14 @@
 ktor:
-    application:
-        modules:
-          - org.alex.notes.ApplicationKt.module
-    deployment:
-        port: 4000
+  application:
+    modules:
+      - org.alex.notes.ApplicationKt.module
+  deployment:
+    port: 4000
 
 jwt:
-    issuer-uri: http://localhost:8080/realms/notes
+  issuer: http://localhost:8080/realms/notes/protocol/openid-connect/certs
+
+database:
+  url: jdbc:mysql://localhost:3306/notes
+  user: admin
+  password: admin
