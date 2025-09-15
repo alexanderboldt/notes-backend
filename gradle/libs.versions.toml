@@ -1,6 +1,6 @@
 [versions]
 # development versions
-ktor-version = "3.2.3"
+ktor-version = "3.3.0"
 logback-version = "1.5.18"
 mysql-version = "8.0.33"
 exposed-version = "0.61.0"
@@ -12,7 +12,7 @@ kotest-ktor-version = "2.0.0"
 testcontainers-version = "1.21.3"
 
 # plugin versions
-kotlin-version = "2.2.10"
+kotlin-version = "2.2.20"
 detekt-version = "1.23.8"
 
 [libraries]
