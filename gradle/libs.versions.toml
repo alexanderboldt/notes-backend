@@ -1,6 +1,6 @@
 [versions]
 # development versions
-ktor-version = "3.3.0"
+ktor-version = "3.3.3"
 logback-version = "1.5.18"
 mysql-version = "8.0.33"
 exposed-version = "0.61.0"
