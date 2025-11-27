@@ -1,53 +1,53 @@
 [versions]
 # development versions
-ktor-version = "3.3.3"
-logback-version = "1.5.18"
-mysql-version = "8.0.33"
-exposed-version = "0.61.0"
-koin-version = "4.1.1"
+ktor = "3.3.3"
+logback = "1.5.18"
+mysql = "8.0.33"
+exposed = "0.61.0"
+koin = "4.1.1"
 
 # test versions
-kotest-version = "6.0.3"
-kotest-ktor-version = "2.0.0"
-testcontainers-version = "1.21.3"
+kotest = "6.0.3"
+kotest-ktor = "2.0.0"
+testcontainers = "1.21.3"
 
 # plugin versions
-kotlin-version = "2.2.20"
-detekt-version = "1.23.8"
+kotlin = "2.2.20"
+detekt = "1.23.8"
 
 [libraries]
 # development libraries
-ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
-ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor-version" }
-ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor-version" }
-ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor-version" }
-ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor-version" }
-ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor-version" }
-ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor-version" }
-ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor-version" }
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor" }
+ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor" }
+ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor" }
 
-logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-version" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 
-mysql = { module = "mysql:mysql-connector-java", version.ref = "mysql-version" }
+mysql = { module = "mysql:mysql-connector-java", version.ref = "mysql" }
 
-exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed-version" }
-exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed-version" }
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 
-koin = { module = "io.insert-koin:koin-ktor", version.ref = "koin-version" }
+koin = { module = "io.insert-koin:koin-ktor", version.ref = "koin" }
 
 # test libraries
-ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor-version" }
-ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor-version" }
+ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 
-kotest-runner-junit = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest-version" }
-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest-version" }
-kotest-assertions-ktor = { module = "io.kotest.extensions:kotest-assertions-ktor", version.ref = "kotest-ktor-version" }
+kotest-runner-junit = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-assertions-ktor = { module = "io.kotest.extensions:kotest-assertions-ktor", version.ref = "kotest-ktor" }
 
-testcontainers-mysql = { module = "org.testcontainers:mysql", version.ref = "testcontainers-version" }
-testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers-version" }
+testcontainers-mysql = { module = "org.testcontainers:mysql", version.ref = "testcontainers" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
 
 [plugins]
-ktor = { id = "io.ktor.plugin", version.ref = "ktor-version" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
-kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt-version" }
+ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
