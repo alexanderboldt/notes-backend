@@ -1,11 +1,12 @@
 package org.alex.notes.repository
 
-import org.alex.notes.domain.Note
+import org.alex.notes.domain.NoteRequest
+import org.alex.notes.domain.NoteResponse
 import java.util.Date
 
 // from domain to entity
 
-fun Note.toEntity() = NoteEntity(
+fun NoteRequest.toEntity() = NoteEntity(
     title = title,
     description = description,
     createdAt = Date().time,
@@ -14,4 +15,4 @@ fun Note.toEntity() = NoteEntity(
 
 // from entity to domain
 
-fun NoteEntity.toDomain() = Note(id, title, description, createdAt, updatedAt)
+fun NoteEntity.toDomain() = NoteResponse(id, title, description, createdAt, updatedAt)

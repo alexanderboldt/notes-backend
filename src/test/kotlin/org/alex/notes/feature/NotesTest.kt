@@ -5,7 +5,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
-import org.alex.notes.domain.Note
+import org.alex.notes.domain.NoteRequest
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.post
@@ -14,6 +14,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.client.request.get
 import io.ktor.client.request.put
 import org.alex.notes.Fixtures
+import org.alex.notes.domain.NoteResponse
 import org.alex.notes.repository.NoteDao
 
 class NotesTest : StringSpec({
@@ -24,13 +25,13 @@ class NotesTest : StringSpec({
         NoteDao().deleteAll()
     }
 
-    suspend fun postNote(note: Note): Int {
+    suspend fun postNote(note: NoteRequest): Int {
         return client.post(Routes.Note.MAIN) {
             setBody(note)
-        }.body<Note>().id
+        }.body<NoteResponse>().id
     }
 
-    infix fun Note.shouldBeNote(expected: Note) {
+    infix fun NoteResponse.shouldBeNote(expected: NoteRequest) {
         id shouldBeGreaterThan 0
         title shouldBe expected.title
         description shouldBe expected.description
@@ -42,7 +43,7 @@ class NotesTest : StringSpec({
         val response = client.post(Routes.Note.MAIN) {
             setBody(Fixtures.Notes.Domain.dinner)
         }
-        val note = response.body<Note>()
+        val note = response.body<NoteResponse>()
 
         response shouldHaveStatus HttpStatusCode.Created
         note shouldBeNote Fixtures.Notes.Domain.dinner
@@ -54,7 +55,7 @@ class NotesTest : StringSpec({
 
     "should return an empty list" {
         val response = client.get(Routes.Note.MAIN)
-        val notes = response.body<List<Note>>()
+        val notes = response.body<List<NoteResponse>>()
 
         response shouldHaveStatus HttpStatusCode.OK
         notes shouldBe emptyList()
@@ -64,7 +65,7 @@ class NotesTest : StringSpec({
         postNote(Fixtures.Notes.Domain.dinner)
 
         val response = client.get(Routes.Note.MAIN)
-        val notes = response.body<List<Note>>()
+        val notes = response.body<List<NoteResponse>>()
 
         response shouldHaveStatus HttpStatusCode.OK
         notes shouldHaveSize 1
@@ -76,7 +77,7 @@ class NotesTest : StringSpec({
         }
 
         val response = client.get(Routes.Note.MAIN)
-        val notes = response.body<List<Note>>()
+        val notes = response.body<List<NoteResponse>>()
 
         response shouldHaveStatus HttpStatusCode.OK
         notes shouldHaveSize 10
@@ -98,7 +99,7 @@ class NotesTest : StringSpec({
         val id = postNote(Fixtures.Notes.Domain.dinner)
 
         val response = client.get(Routes.Note.DETAIL + id)
-        val note = response.body<Note>()
+        val note = response.body<NoteResponse>()
 
         response shouldHaveStatus HttpStatusCode.OK
         note shouldBeNote Fixtures.Notes.Domain.dinner
@@ -124,7 +125,7 @@ class NotesTest : StringSpec({
         val response = client.put(Routes.Note.DETAIL + id) {
             setBody(Fixtures.Notes.Domain.shopping)
         }
-        val note = response.body<Note>()
+        val note = response.body<NoteResponse>()
 
         response shouldHaveStatus HttpStatusCode.OK
         note shouldBeNote Fixtures.Notes.Domain.shopping

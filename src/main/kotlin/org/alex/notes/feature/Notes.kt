@@ -1,6 +1,6 @@
 package org.alex.notes.feature
 
-import org.alex.notes.domain.Note
+import org.alex.notes.domain.NoteRequest
 import org.alex.notes.repository.NoteDao
 import org.alex.notes.repository.NoteTable
 import org.alex.notes.repository.toDomain
@@ -29,7 +29,7 @@ fun Route.notesRouting() {
         // create
 
         post {
-            val note = call.receive<Note>().toEntity()
+            val note = call.receive<NoteRequest>().toEntity()
 
             call.respond(HttpStatusCode.Created, noteDao.save(note).toDomain())
         }
@@ -54,7 +54,7 @@ fun Route.notesRouting() {
         // update
 
         put("/{id}") {
-            val note = call.receive<Note>()
+            val note = call.receive<NoteRequest>()
             val id = call.pathParameters.getOrFail<Int>("id")
 
             val noteUpdated = noteDao
