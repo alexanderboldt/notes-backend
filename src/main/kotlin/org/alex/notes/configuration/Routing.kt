@@ -1,11 +1,15 @@
 package org.alex.notes.configuration
 
-import org.alex.notes.feature.notesRouting
 import io.ktor.server.application.Application
+import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import org.alex.notes.feature.noteRoutes
+import org.alex.notes.utils.Path
 
 fun Application.configureRouting() {
     routing {
-        notesRouting()
+        route(Path.API) {
+            noteRoutes()
+        }
     }
 }

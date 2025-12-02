@@ -16,12 +16,14 @@ import io.ktor.server.routing.delete
 import io.ktor.server.routing.route
 import io.ktor.server.util.getOrFail
 import org.alex.notes.utils.BadRequestThrowable
+import org.alex.notes.utils.Path
+import org.alex.notes.utils.PathParam
+import org.alex.notes.utils.QueryParam
 import org.alex.notes.utils.convertToSort
 import org.koin.ktor.ext.inject
 
-fun Route.notesRouting() {
-
-    route("api/v1/notes") {
+fun Route.noteRoutes() {
+    route(Path.NOTES) {
 
         val noteDao: NoteDao by inject()
 
@@ -36,14 +38,14 @@ fun Route.notesRouting() {
         // read
 
         get {
-            val sort = call.queryParameters["sort"]?.convertToSort(NoteTable.columns)
+            val sort = call.queryParameters[QueryParam.SORT]?.convertToSort(NoteTable.columns)
 
             call.respond(noteDao.getAll(sort).map { it.toDomain() })
         }
 
-        get("/{id}") {
+        get(Path.ID) {
             val note = noteDao
-                .get(call.pathParameters.getOrFail<Int>("id"))
+                .get(call.pathParameters.getOrFail<Int>(PathParam.ID))
                 ?.toDomain()
                 ?: throw BadRequestThrowable()
 
@@ -52,9 +54,9 @@ fun Route.notesRouting() {
 
         // update
 
-        put("/{id}") {
+        put(Path.ID) {
             val note = call.receive<NoteRequest>()
-            val id = call.pathParameters.getOrFail<Int>("id")
+            val id = call.pathParameters.getOrFail<Int>(PathParam.ID)
 
             val noteUpdated = noteDao
                 .update(note.toEntity().copy(id = id))
@@ -66,8 +68,8 @@ fun Route.notesRouting() {
 
         // delete
 
-        delete("/{id}") {
-            if (!noteDao.delete(call.pathParameters.getOrFail<Int>("id"))) {
+        delete(Path.ID) {
+            if (!noteDao.delete(call.pathParameters.getOrFail<Int>(PathParam.ID))) {
                 throw BadRequestThrowable()
             }
 
