@@ -1,5 +1,3 @@
-@file:Suppress("UnusedReceiverParameter")
-
 package org.alex.notes.configuration
 
 import org.alex.notes.repository.NoteTable
