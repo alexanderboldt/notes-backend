@@ -8,15 +8,15 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.testing.TestApplication
 import kotlinx.serialization.json.Json
 import org.alex.notes.configuration.configureKoin
+import org.alex.notes.configuration.configureRouting
 import org.alex.notes.configuration.configureSerialization
 import org.alex.notes.configuration.configureTestDatabase
-import org.alex.notes.configuration.configureTestRouting
 
 val client = TestApplication {
     application {
         configureTestDatabase()
         configureSerialization()
-        configureTestRouting()
+        configureRouting()
         configureKoin()
     }
 }.createClient {
