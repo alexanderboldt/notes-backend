@@ -5,13 +5,15 @@ import org.jetbrains.exposed.sql.SortOrder
 import kotlin.collections.mapNotNull
 import kotlin.text.split
 
+typealias Sort = List<Pair<Column<*>, SortOrder>>
+
 /**
- * Converts a sort parameter from [String] to `List<Pair<Column<*>, SortOrder>>`.
+ * Converts a sort parameter from [String] to [Sort].
  *
  * @param columns The columns of the required table to compare as a [List] of [Column]-objects.
- * @return The prepared sort-objects as `List<Pair<Column<*>, SortOrder>>`.
+ * @return The prepared sort-objects as [Sort].
  */
-fun String.convertToSort(columns: List<Column<*>>): List<Pair<Column<*>, SortOrder>> {
+fun String.convertToSort(columns: List<Column<*>>): Sort {
     return split(",")
         .mapNotNull { sort ->
             val (expression, order) = when (sort.startsWith("-")) {

@@ -6,8 +6,7 @@ import org.alex.notes.repository.NoteDao
 import org.alex.notes.repository.toDomain
 import org.alex.notes.repository.toEntity
 import org.alex.notes.utils.BadRequestThrowable
-import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.SortOrder
+import org.alex.notes.utils.Sort
 
 class NoteService(private val noteDao: NoteDao) {
 
@@ -19,7 +18,7 @@ class NoteService(private val noteDao: NoteDao) {
 
     // read
 
-    suspend fun readAll(sort: List<Pair<Column<*>, SortOrder>>?): List<NoteResponse> {
+    suspend fun readAll(sort: Sort?): List<NoteResponse> {
         return noteDao.getAll(sort).map { it.toDomain() }
     }
 

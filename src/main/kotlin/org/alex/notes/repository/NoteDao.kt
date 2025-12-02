@@ -1,9 +1,8 @@
 package org.alex.notes.repository
 
 import kotlinx.coroutines.Dispatchers
-import org.jetbrains.exposed.sql.Column
+import org.alex.notes.utils.Sort
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
@@ -49,8 +48,7 @@ class NoteDao {
 
     // read
 
-    @Suppress("SpreadOperator") // orderBy requires vararg
-    suspend fun getAll(sort: List<Pair<Column<*>, SortOrder>>?): List<NoteEntity> = dbQuery {
+    suspend fun getAll(sort: Sort?): List<NoteEntity> = dbQuery {
         NoteTable
             .selectAll()
             .apply { if (sort != null) orderBy(*sort.toTypedArray()) }
