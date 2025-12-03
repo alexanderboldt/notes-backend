@@ -1,3 +1,5 @@
+import io.ktor.plugin.features.DockerPortMapping
+
 plugins {
     alias(libs.plugins.ktor)
     alias(libs.plugins.kotlin.jvm)
@@ -6,7 +8,6 @@ plugins {
 }
 
 group = "org.alex.notes"
-version = "0.0.1"
 
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
@@ -58,3 +59,12 @@ dependencies {
     testImplementation(libs.testcontainers.mysql)
     testImplementation(libs.testcontainers.junit.jupiter)
 }
+
+ktor {
+    docker {
+        jreVersion.set(JavaVersion.VERSION_21)
+        localImageName.set("notes/app")
+        imageTag.set("1.0.0")
+    }
+}
+
