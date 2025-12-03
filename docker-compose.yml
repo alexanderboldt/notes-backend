@@ -1,6 +1,7 @@
 services:
   mysql:
     image: mysql:9.2.0
+    container_name: notes-mysql
     environment:
       MYSQL_DATABASE: ${DB}
       MYSQL_USER: ${DB_USERNAME}
@@ -11,11 +12,25 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      - backend
+      - notes
+
+  app:
+    image: notes/app:1.0.0
+    container_name: notes-app
+    ports:
+      - ${APP_PORT}:4000
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/${DB}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - mysql
+    networks:
+      - notes
 
 volumes:
   mysql_data:
 
 networks:
-  backend:
-    driver: bridge
+  notes:
+    name: notes
