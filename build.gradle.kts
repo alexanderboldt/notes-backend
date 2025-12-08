@@ -1,5 +1,3 @@
-import io.ktor.plugin.features.DockerPortMapping
-
 plugins {
     alias(libs.plugins.ktor)
     alias(libs.plugins.kotlin.jvm)
@@ -62,9 +60,9 @@ dependencies {
 
 ktor {
     docker {
-        jreVersion.set(JavaVersion.VERSION_21)
-        localImageName.set("notes/app")
-        imageTag.set("1.0.0")
+        jreVersion = JavaVersion.VERSION_21
+        localImageName = "notes/app"
+        imageTag = "1.0.0"
     }
 }
 
