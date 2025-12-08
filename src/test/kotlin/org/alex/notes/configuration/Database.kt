@@ -5,7 +5,7 @@ import org.alex.notes.repository.NoteTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.testcontainers.containers.MySQLContainer
+import org.testcontainers.mysql.MySQLContainer
 
 fun Application.configureTestDatabase() {
     val mysqlContainer = MySQLContainer("mysql:9.2.0").apply {
