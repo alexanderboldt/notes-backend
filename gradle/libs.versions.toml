@@ -9,7 +9,7 @@ koin = "4.1.1"
 # test versions
 kotest = "6.0.7"
 kotest-ktor = "2.0.0"
-testcontainers = "1.21.3"
+testcontainers = "2.0.2"
 
 # plugin versions
 kotlin = "2.2.20"
@@ -42,8 +42,8 @@ kotest-runner-junit = { module = "io.kotest:kotest-runner-junit5", version.ref =
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-assertions-ktor = { module = "io.kotest.extensions:kotest-assertions-ktor", version.ref = "kotest-ktor" }
 
-testcontainers-mysql = { module = "org.testcontainers:mysql", version.ref = "testcontainers" }
-testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+testcontainers-mysql = { module = "org.testcontainers:testcontainers-mysql", version.ref = "testcontainers" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:testcontainers-junit-jupiter", version.ref = "testcontainers" }
 
 [plugins]
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
