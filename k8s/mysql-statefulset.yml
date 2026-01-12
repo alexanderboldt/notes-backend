@@ -16,15 +16,9 @@ spec:
       containers:
         - name: mysql
           image: mysql:9.2.0
-          env:
-            - name: MYSQL_DATABASE
-              value: "notes"
-            - name: MYSQL_USER
-              value: "admin"
-            - name: MYSQL_PASSWORD
-              value: "admin"
-            - name: MYSQL_ROOT_PASSWORD
-              value: "admin"
+          envFrom:
+            - configMapRef:
+                name: mysql-config
           ports:
             - containerPort: 3306
           volumeMounts:
