@@ -22,6 +22,9 @@ This is a backend application for managing notes.
 ### Code Analysis
 - Detekt
 
+### CI/CD
+- GitHub Actions
+
 ## Install with Docker
 1. Build the ktor docker image:
 ```bash
