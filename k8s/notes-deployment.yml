@@ -16,10 +16,8 @@ spec:
       containers:
         - name: notes
           image: localhost:32000/notes/app:1.0.0
-          env:
-            - name: DB_URL
-              value: jdbc:mysql://mysql:3306/notes
-            - name: DB_USERNAME
-              value: admin
-            - name: DB_PASSWORD
-              value: admin
+          envFrom:
+            - configMapRef:
+                name: notes-config
+          ports:
+            - containerPort: 4000

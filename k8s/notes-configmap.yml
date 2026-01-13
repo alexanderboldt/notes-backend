@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notes-config
+  namespace: notes
+data:
+  DB_URL: jdbc:mysql://mysql:3306/notes
+  DB_USERNAME: admin
+  DB_PASSWORD: admin
