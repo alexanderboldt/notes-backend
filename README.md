@@ -58,8 +58,9 @@ microk8s kubectl apply -f k8s/mysql-statefulset.yml
 microk8s kubectl apply -f k8s/mysql-service.yml
 ```
 
-Apply Deployment and Service of the notes app:
+Apply ConfigMap, Deployment and Service of the notes app:
 ```bash
+microk8s kubectl apply -f k8s/notes-configmap.yml
 microk8s kubectl apply -f k8s/notes-deployment.yml
 microk8s kubectl apply -f k8s/notes-service.yml
 ```
@@ -76,7 +77,7 @@ microk8s kubectl delete statefulset mysql
 microk8s kubectl delete deployment notes
 ```
 
-Delete the project namespace if not needed anymore:
+Delete the project namespace and the objects if not needed anymore:
 ```bash
 microk8s kubectl delete namespace notes
 ```
