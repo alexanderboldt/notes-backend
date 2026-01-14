@@ -48,6 +48,7 @@ class NoteDao {
 
     // read
 
+    @Suppress("SpreadOperator")
     suspend fun getAll(sort: Sort?): List<NoteEntity> = dbQuery {
         NoteTable
             .selectAll()
