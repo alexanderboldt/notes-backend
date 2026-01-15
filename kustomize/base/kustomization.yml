@@ -7,21 +7,15 @@ resources:
   - notes/deployment.yml
   - notes/service.yml
 
-configMapGenerator:
-  - name: mysql-config
-    literals:
-      - MYSQL_DATABASE=notes
-  - name: notes-config
-    literals:
-      - DB_URL=jdbc:mysql://mysql:3306/notes
-
 secretGenerator:
   - name: mysql-secret
     literals:
+      - MYSQL_DATABASE=notes
       - MYSQL_USER=admin
       - MYSQL_PASSWORD=admin
       - MYSQL_ROOT_PASSWORD=admin
   - name: notes-secret
     literals:
+      - DB_URL=jdbc:mysql://mysql:3306/notes
       - DB_USERNAME=admin
       - DB_PASSWORD=admin

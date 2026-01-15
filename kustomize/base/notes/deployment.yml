@@ -16,8 +16,6 @@ spec:
         - name: notes
           image: localhost:32000/notes/app:1.0.0
           envFrom:
-            - configMapRef:
-                name: notes-config
             - secretRef:
                 name: notes-secret
           ports:
