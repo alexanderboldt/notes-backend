@@ -19,5 +19,7 @@ spec:
           envFrom:
             - configMapRef:
                 name: notes-config
+            - secretRef:
+                name: notes-secret
           ports:
             - containerPort: 4000
