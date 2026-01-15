@@ -1,0 +1,27 @@
+namespace: notes
+
+resources:
+  - namespace.yml
+  - mysql/statefulset.yml
+  - mysql/service.yml
+  - notes/deployment.yml
+  - notes/service.yml
+
+configMapGenerator:
+  - name: mysql-config
+    literals:
+      - MYSQL_DATABASE=notes
+  - name: notes-config
+    literals:
+      - DB_URL=jdbc:mysql://mysql:3306/notes
+
+secretGenerator:
+  - name: mysql-secret
+    literals:
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+      - MYSQL_ROOT_PASSWORD=admin
+  - name: notes-secret
+    literals:
+      - DB_USERNAME=admin
+      - DB_PASSWORD=admin
