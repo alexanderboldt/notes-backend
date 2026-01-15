@@ -43,7 +43,7 @@ Build the ktor docker image:
 
 Push the image from docker to kubernetes:
 ```bash
-docker push localhost:32000/notes/app:latest
+docker push localhost:32000/notes/app:1.0.0
 ```
 
 Create the project namespace:
@@ -51,30 +51,9 @@ Create the project namespace:
 microk8s kubectl apply -f k8s/notes-namespace.yml
 ```
 
-Create ConfigMap, Statefulset and Service of mysql:
+Create all remaining objects from the folder:
 ```bash
-microk8s kubectl apply -f k8s/mysql-configmap.yml
-microk8s kubectl apply -f k8s/mysql-statefulset.yml
-microk8s kubectl apply -f k8s/mysql-service.yml
-```
-
-Apply ConfigMap, Deployment and Service of the notes app:
-```bash
-microk8s kubectl apply -f k8s/notes-configmap.yml
-microk8s kubectl apply -f k8s/notes-deployment.yml
-microk8s kubectl apply -f k8s/notes-service.yml
-```
-
-Scale down the pods if temporary not needed:
-```bash
-microk8s kubectl scale statefulset mysql --replicas=0
-microk8s kubectl scale deployment notes --replicas=0
-```
-
-Delete the pods:
-```bash
-microk8s kubectl delete statefulset mysql
-microk8s kubectl delete deployment notes
+microk8s kubectl apply -f k8s/
 ```
 
 Delete the project namespace and the objects if not needed anymore:
