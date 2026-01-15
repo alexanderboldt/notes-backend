@@ -9,13 +9,8 @@ resources:
 
 secretGenerator:
   - name: mysql-secret
-    literals:
-      - MYSQL_DATABASE=notes
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=admin
-      - MYSQL_ROOT_PASSWORD=admin
+    envs:
+      - secrets/mysql.env
   - name: notes-secret
-    literals:
-      - DB_URL=jdbc:mysql://mysql:3306/notes
-      - DB_USERNAME=admin
-      - DB_PASSWORD=admin
+    envs:
+      - secrets/notes.env
