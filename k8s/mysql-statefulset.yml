@@ -20,6 +20,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: mysql-config
+            - secretRef:
+                name: mysql-secret
           ports:
             - containerPort: 3306
           volumeMounts:
