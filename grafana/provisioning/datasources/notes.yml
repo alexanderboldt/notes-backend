@@ -5,10 +5,10 @@ datasources:
     uid: df95d61129vy8b
     type: mysql
     url: mysql:3306
-    user: ${DB_USERNAME}
+    user: ${MYSQL_USER}
     access: proxy
     jsonData:
-      database: ${DB}
+      database: ${MYSQL_DATABASE}
       sslmode: disable
     secureJsonData:
-      password: ${DB_PASSWORD}
+      password: ${MYSQL_PASSWORD}

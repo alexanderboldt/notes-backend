@@ -6,6 +6,6 @@ ktor:
     port: 4000
 
 database:
-  url: ${DB_URL}
-  user: ${DB_USERNAME}
-  password: ${DB_PASSWORD}
+  url: ${MYSQL_URL}
+  user: ${MYSQL_USER}
+  password: ${MYSQL_PASSWORD}
