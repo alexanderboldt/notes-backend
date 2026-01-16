@@ -14,6 +14,27 @@ services:
     networks:
       - notes
 
+  grafana:
+    image: grafana/grafana:latest
+    container_name: notes-grafana
+    ports:
+      - 3000:3000
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      DB_DB: ${DB}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PORT: 3306
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - mysql
+    networks:
+      - notes
+
   app:
     image: notes/app:1.0.0
     container_name: notes-app
@@ -30,6 +51,7 @@ services:
 
 volumes:
   mysql_data:
+  grafana_data:
 
 networks:
   notes:
