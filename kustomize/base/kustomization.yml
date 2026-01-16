@@ -4,6 +4,9 @@ resources:
   - namespace.yml
   - mysql/statefulset.yml
   - mysql/service.yml
+  - grafana/pvc.yml
+  - grafana/deployment.yml
+  - grafana/service.yml
   - notes/deployment.yml
   - notes/service.yml
 
@@ -11,6 +14,9 @@ secretGenerator:
   - name: mysql-secret
     envs:
       - secrets/mysql.env
+  - name: grafana-secret
+    envs:
+      - secrets/grafana.env
   - name: notes-secret
     envs:
       - secrets/notes.env

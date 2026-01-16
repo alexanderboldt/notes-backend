@@ -22,7 +22,7 @@ services:
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_USER}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
-      DB_DB: ${DB}
+      DB: ${DB}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_PORT: 3306
