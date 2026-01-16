@@ -3,7 +3,7 @@ services:
     image: mysql:9.2.0
     container_name: notes-mysql
     env_file:
-      - mysql.env
+      - kustomize/base/secrets/mysql.env
     ports:
       - 3306:3306
     volumes:
@@ -17,8 +17,8 @@ services:
     ports:
       - 3000:3000
     env_file:
-      - mysql.env
-      - grafana.env
+      - kustomize/base/secrets/mysql.env
+      - kustomize/base/secrets/grafana.env
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
@@ -29,12 +29,12 @@ services:
       - notes
 
   app:
-    image: notes/app:2.0.0
+    image: localhost:32000/notes/app:2.0.0
     container_name: notes-app
     ports:
       - 4000:4000
     env_file:
-      - mysql.env
+      - kustomize/base/secrets/mysql.env
     depends_on:
       - mysql
     networks:

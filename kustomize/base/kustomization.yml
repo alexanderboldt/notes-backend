@@ -17,6 +17,3 @@ secretGenerator:
   - name: grafana-secret
     envs:
       - secrets/grafana.env
-  - name: notes-secret
-    envs:
-      - secrets/notes.env
