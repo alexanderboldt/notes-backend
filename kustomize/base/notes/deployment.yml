@@ -15,6 +15,7 @@ spec:
       containers:
         - name: notes
           image: localhost:32000/notes/app:2.0.0
+          imagePullPolicy: IfNotPresent
           envFrom:
             - secretRef:
                 name: mysql-secret

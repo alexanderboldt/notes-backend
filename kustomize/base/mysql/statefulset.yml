@@ -16,6 +16,7 @@ spec:
       containers:
         - name: mysql
           image: mysql:9.2.0
+          imagePullPolicy: IfNotPresent
           envFrom:
             - secretRef:
                 name: mysql-secret

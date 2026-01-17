@@ -15,7 +15,10 @@ spec:
       containers:
         - name: grafana
           image: grafana/grafana:latest
+          imagePullPolicy: IfNotPresent
           envFrom:
+            - secretRef:
+                name: mysql-secret
             - secretRef:
                 name: grafana-secret
           ports:
@@ -23,7 +26,17 @@ spec:
           volumeMounts:
             - name: grafana-storage
               mountPath: /var/lib/grafana
+            - name: grafana-provisioning
+              mountPath: /etc/grafana/provisioning
+            - name: grafana-dashboards
+              mountPath: /var/lib/grafana/dashboards
       volumes:
         - name: grafana-storage
           persistentVolumeClaim:
             claimName: grafana-storage
+        - name: grafana-provisioning
+          persistentVolumeClaim:
+            claimName: grafana-provisioning
+        - name: grafana-dashboards
+          persistentVolumeClaim:
+            claimName: grafana-dashboards
