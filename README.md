@@ -33,7 +33,7 @@ Build the ktor Docker image:
 
 Push the image from Docker to Kubernetes registry:
 ```bash
-docker push localhost:32000/notes/app:latest
+docker push localhost:32000/notes/app:2.0.0
 ```
 
 Create and start the containers:
