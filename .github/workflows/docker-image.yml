@@ -2,13 +2,11 @@ name: Build & Push the docker image
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       packages: write
@@ -17,7 +15,13 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v4
 
-      - name: Build and push with Jib
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Build and push the image
         run: ./gradlew clean jib -x test --no-daemon
         env:
           GITHUB_USERNAME: ${{ github.actor }}

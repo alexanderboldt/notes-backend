@@ -29,7 +29,7 @@ services:
       - notes
 
   app:
-    image: ghcr.io/alexanderboldt/notes/app:2.0.0
+    image: ghcr.io/alexanderboldt/notes/app:2.1.0
     container_name: notes-app
     ports:
       - 4000:4000
