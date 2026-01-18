@@ -61,7 +61,7 @@ dependencies {
 ktor {
     docker {
         jreVersion = JavaVersion.VERSION_21
-        localImageName = "localhost:32000/notes/app"
+        localImageName = "notes/app"
         imageTag = "2.0.0"
     }
 }

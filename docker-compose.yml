@@ -29,7 +29,7 @@ services:
       - notes
 
   app:
-    image: localhost:32000/notes/app:2.0.0
+    image: notes/app:2.0.0
     container_name: notes-app
     ports:
       - 4000:4000
