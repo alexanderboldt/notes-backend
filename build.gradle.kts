@@ -66,3 +66,20 @@ ktor {
     }
 }
 
+jib {
+    from {
+        image = "eclipse-temurin:21-jdk-alpine"
+    }
+    to {
+        image = "ghcr.io/alexanderboldt/notes/app"
+        tags = setOf("2.1.0", "latest")
+        auth {
+            username = System.getenv("GITHUB_USERNAME")
+            password = System.getenv("GITHUB_TOKEN")
+        }
+    }
+    container {
+        ports = listOf("4000")
+        mainClass = "org.alex.notes.ApplicationKt"
+    }
+}
