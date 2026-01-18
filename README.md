@@ -31,8 +31,9 @@ Build the ktor Docker image:
 ./gradlew clean publishImageToLocalRegistry
 ```
 
-Push the image from Docker to Kubernetes registry:
+Create a tag for local Kubernetes and push it to the registry:
 ```bash
+docker tag notes/app:2.0.0 localhost:32000/notes/app:2.0.0
 docker push localhost:32000/notes/app:2.0.0
 ```
 
