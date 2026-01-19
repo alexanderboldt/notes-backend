@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: notes
-          image: ghcr.io/alexanderboldt/notes/app:2.0.0
+          image: ghcr.io/alexanderboldt/notes:2.1.0
           imagePullPolicy: IfNotPresent
           envFrom:
             - secretRef:

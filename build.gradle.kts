@@ -61,8 +61,8 @@ dependencies {
 ktor {
     docker {
         jreVersion = JavaVersion.VERSION_21
-        localImageName = "notes/app"
-        imageTag = "2.0.0"
+        localImageName = "notes"
+        imageTag = "2.1.0"
     }
 }
 
@@ -71,7 +71,7 @@ jib {
         image = "eclipse-temurin:21-jdk-alpine"
     }
     to {
-        image = "ghcr.io/alexanderboldt/notes/app"
+        image = "ghcr.io/alexanderboldt/notes"
         tags = setOf("2.1.0", "latest")
         auth {
             username = System.getenv("GITHUB_USERNAME")
