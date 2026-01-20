@@ -20,3 +20,11 @@ jobs:
 
       - name: Run integration tests
         run: ./gradlew clean test --tests "org.alex.notes.feature.*"
+
+      - name: Upload integration-test report to artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-report
+          path: build/reports/tests/
+          retention-days: 14
