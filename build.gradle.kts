@@ -62,7 +62,7 @@ ktor {
     docker {
         jreVersion = JavaVersion.VERSION_21
         localImageName = "notes"
-        imageTag = "2.1.0"
+        imageTag = "3.0.0"
     }
 }
 
@@ -72,7 +72,7 @@ jib {
     }
     to {
         image = "ghcr.io/alexanderboldt/notes"
-        tags = setOf("2.1.0", "latest")
+        tags = setOf("3.0.0", "latest")
         auth {
             username = System.getenv("GITHUB_USERNAME")
             password = System.getenv("GITHUB_TOKEN")
