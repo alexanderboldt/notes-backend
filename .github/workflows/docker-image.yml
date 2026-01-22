@@ -3,7 +3,6 @@ name: Build & Push the docker image triggered by a release
 on:
   release:
     types: [published]
-  workflow_dispatch:
 
 jobs:
   docker:
