@@ -82,7 +82,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select count(*) from notes.Note limit 1;",
+          "rawSql": "select count(*) from Note limit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -167,7 +167,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT title FROM notes.Note order by updated_at desc limit 1;",
+          "rawSql": "SELECT title FROM Note order by updated_at desc limit 1;",
           "refId": "A",
           "sql": {
             "columns": [

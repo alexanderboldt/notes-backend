@@ -35,6 +35,7 @@ services:
       - 4000:4000
     env_file:
       - kustomize/base/secrets/mysql.env
+      - kustomize/base/secrets/notes.env
     depends_on:
       - mysql
     networks:
