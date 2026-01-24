@@ -1,7 +1,7 @@
 package org.alex.notes.utils
 
-import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.SortOrder
 import kotlin.collections.mapNotNull
 import kotlin.text.split
 

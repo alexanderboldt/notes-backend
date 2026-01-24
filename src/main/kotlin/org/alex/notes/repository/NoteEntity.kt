@@ -1,7 +1,7 @@
 package org.alex.notes.repository
 
 import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.v1.core.Table
 
 @Serializable
 data class NoteEntity(
