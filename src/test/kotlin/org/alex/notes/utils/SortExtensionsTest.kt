@@ -5,7 +5,7 @@ import io.kotest.inspectors.forExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import org.alex.notes.repository.NoteTable
-import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.v1.core.SortOrder
 import kotlin.collections.emptyList
 
 class SortExtensionsTest : StringSpec ({

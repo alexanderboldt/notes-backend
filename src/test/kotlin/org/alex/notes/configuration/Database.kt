@@ -2,9 +2,9 @@ package org.alex.notes.configuration
 
 import io.ktor.server.application.Application
 import org.alex.notes.repository.NoteTable
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.SchemaUtils
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.testcontainers.mysql.MySQLContainer
 
 fun Application.configureTestDatabase() {
