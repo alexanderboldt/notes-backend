@@ -1,23 +1,34 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: notes-app
+spec:
+  selector:
+    app: notes-app
+  ports:
+    - port: 4000 # internal cluster port
+      targetPort: 4000
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: notes
+  name: notes-app
 spec:
   selector:
     matchLabels:
-      app: notes
+      app: notes-app
   replicas: 1
   template:
     metadata:
       labels:
-        app: notes
+        app: notes-app
     spec:
       containers:
-        - name: notes
+        - name: notes-app
           image: ghcr.io/alexanderboldt/notes:3.0.0
           imagePullPolicy: IfNotPresent
           envFrom:
             - secretRef:
-                name: mysql-secret
+                name: notes-mysql-secret
           ports:
             - containerPort: 4000
