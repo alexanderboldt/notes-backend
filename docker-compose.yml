@@ -1,34 +1,17 @@
 services:
-  mysql:
+  notes-mysql:
     image: mysql:9.2.0
     container_name: notes-mysql
     env_file:
       - kustomize/base/secrets/mysql.env
     ports:
-      - 3306:3306
+      - 3309:3306
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
       - notes
 
-  grafana:
-    image: grafana/grafana:latest
-    container_name: notes-grafana
-    ports:
-      - 3000:3000
-    env_file:
-      - kustomize/base/secrets/mysql.env
-      - kustomize/base/secrets/grafana.env
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
-      - ./grafana/dashboards:/var/lib/grafana/dashboards
-    depends_on:
-      - mysql
-    networks:
-      - notes
-
-  app:
+  notes-app:
     image: ghcr.io/alexanderboldt/notes:3.0.0
     container_name: notes-app
     ports:
@@ -37,13 +20,12 @@ services:
       - kustomize/base/secrets/mysql.env
       - kustomize/base/secrets/notes.env
     depends_on:
-      - mysql
+      - notes-mysql
     networks:
       - notes
 
 volumes:
   mysql_data:
-  grafana_data:
 
 networks:
   notes:
