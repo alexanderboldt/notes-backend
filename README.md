@@ -37,17 +37,6 @@ Install all objects with Kustomize:
 kubectl kube apply -k kustomize/base
 ```
 
-Copy the dashboards and provisioning files in the grafana pod:
-```bash
-kubectl cp grafana/dashboards <grafana-pod>:/var/lib/grafana
-kubectl cp grafana/provisioning <grafana-pod>:/etc/grafana
-```
-
-Restart the grafana pod:
-```bash
-kubectl rollout restart deployment grafana
-```
-
 Delete the project namespace and the objects if not needed anymore:
 ```bash
 kubectl delete namespace notes
