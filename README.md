@@ -2,7 +2,7 @@
 
 This is a backend application for managing notes.
 
-## Tech-Stack
+## :computer: Tech-Stack
 
 ### Development
 - Kotlin
@@ -25,13 +25,13 @@ This is a backend application for managing notes.
 ### CI/CD
 - GitHub Actions
 
-## Install with Docker
+## :whale: Install with Docker
 Create and start the containers:
 ```bash
 docker compose up -d
 ```
 
-## Install with Kubernetes
+## :wheel: Install with Kubernetes
 Install all objects with Kustomize:
 ```bash
 kubectl kube apply -k kustomize/base
