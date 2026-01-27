@@ -9,3 +9,6 @@ secretGenerator:
   - name: notes-mysql-secret
     envs:
       - secrets/mysql.env
+  - name: notes-app-secret
+    envs:
+      - secrets/notes.env

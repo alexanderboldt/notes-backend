@@ -30,5 +30,7 @@ spec:
           envFrom:
             - secretRef:
                 name: notes-mysql-secret
+            - secretRef:
+                name: notes-app-secret
           ports:
             - containerPort: 4000
