@@ -1,4 +1,4 @@
-# Notes-Backend
+# :notebook: Notes-Backend
 
 This is a backend application for managing notes.
 
