@@ -1,0 +1,23 @@
+meta {
+  name: Create
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{BASE_URL}}/v1/notes
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "Essen kochen",
+    "description": "Soll lecker sein"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
