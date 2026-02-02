@@ -34,7 +34,7 @@ docker compose up -d
 ## :wheel: Install with Kubernetes
 Install all objects with Kustomize:
 ```bash
-kubectl kube apply -k kustomize/base
+kubectl apply -k kustomize/base
 ```
 
 Delete the project namespace and the objects if not needed anymore:
