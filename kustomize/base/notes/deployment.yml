@@ -3,11 +3,13 @@ kind: Service
 metadata:
   name: notes-app
 spec:
+  type: NodePort
   selector:
     app: notes-app
   ports:
     - port: 4000 # internal cluster port
       targetPort: 4000
+      nodePort: 30000
 ---
 apiVersion: apps/v1
 kind: Deployment
