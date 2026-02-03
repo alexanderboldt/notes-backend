@@ -40,3 +40,8 @@ nb-configuration.xml
 /.quarkus/cli/plugins/
 # TLS Certificates
 .certs/
+
+# Terraform / OpenTofu
+.terraform/
+*.tfstate
+*.tfstate.backup
