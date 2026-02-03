@@ -41,3 +41,13 @@ Delete the project namespace and the objects if not needed anymore:
 ```bash
 kubectl delete namespace notes
 ```
+
+## Install with OpenTofu (Terraform)
+Make sure a connection to AWS is available in the cli.
+
+Execute with these commands:
+```bash
+tofu init
+tofu plan
+tofu apply
+```
