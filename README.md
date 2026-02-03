@@ -51,3 +51,8 @@ tofu init
 tofu plan
 tofu apply
 ```
+
+Delete all resources if not needed anymore:
+```bash
+tofu destroy
+```
