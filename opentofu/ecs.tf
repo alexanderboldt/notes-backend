@@ -11,19 +11,19 @@ resource "aws_ecs_task_definition" "app" {
 
   container_definitions = jsonencode([
     {
-      name      = "notes-app"
-      image     = "ghcr.io/alexanderboldt/notes:3.1.0"
+      name      = local.notes_app.name
+      image     = local.notes_app.image
       essential = true
       portMappings = [
         {
-          containerPort = 4000
-          hostPort      = 4000
+          containerPort = local.notes_app.port
+          hostPort      = local.notes_app.port
         }
       ]
       environment = [
-        { name = "MYSQL_URL",  value = "jdbc:mysql://${aws_db_instance.mysql.endpoint}/myappdb" },
-        { name = "MYSQL_USER",  value = "admin" },
-        { name = "MYSQL_PASSWORD",  value = "adminadmin" }
+        { name = "MYSQL_URL",  value = "jdbc:mysql://${aws_db_instance.mysql.endpoint}/${local.database.name}" },
+        { name = "MYSQL_USER",  value = local.database.username },
+        { name = "MYSQL_PASSWORD",  value = local.database.password }
       ]
     }
   ])
@@ -49,8 +49,8 @@ resource "aws_security_group" "ecs_sg" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    from_port   = 4000
-    to_port     = 4000
+    from_port   = local.notes_app.port
+    to_port     = local.notes_app.port
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

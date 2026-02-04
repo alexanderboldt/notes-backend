@@ -3,9 +3,9 @@ resource "aws_db_instance" "mysql" {
   engine               = "mysql"
   engine_version       = "8.0"
   instance_class       = "db.t4g.micro"
-  db_name              = "notes"
-  username             = "admin"
-  password             = "adminadmin"
+  db_name              = local.database.name
+  username             = local.database.username
+  password             = local.database.password
   db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.id
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   skip_final_snapshot  = true
@@ -24,8 +24,8 @@ resource "aws_security_group" "rds_sg" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    from_port       = 3306
-    to_port         = 3306
+    from_port       = local.database.port
+    to_port         = local.database.port
     protocol        = "tcp"
     security_groups = [aws_security_group.ecs_sg.id]
   }
