@@ -78,6 +78,34 @@ class NoteDao {
         }
     }
 
+    suspend fun updateFilename(id: Int, filenameNew: String): NoteEntity? = dbQuery {
+        val couldUpdateNote = NoteTable.update(
+            where = { NoteTable.id eq id },
+            body = {
+                it[filename] = filenameNew
+                it[updatedAt] = Date().time
+            }) > 0
+
+        when (couldUpdateNote) {
+            true -> getSingleNoteOrNull(id)
+            false -> null
+        }
+    }
+
+    suspend fun deleteFilename(id: Int): NoteEntity? = dbQuery {
+        val couldUpdateNote = NoteTable.update(
+            where = { NoteTable.id eq id },
+            body = {
+                it[filename] = null
+                it[updatedAt] = Date().time
+            }) > 0
+
+        when (couldUpdateNote) {
+            true -> getSingleNoteOrNull(id)
+            false -> null
+        }
+    }
+
     // delete
 
     suspend fun delete(id: Int): Boolean = dbQuery {

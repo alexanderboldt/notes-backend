@@ -14,6 +14,7 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import org.alex.notes.service.NoteImageService
 import org.alex.notes.utils.Path
+import org.alex.notes.utils.id
 import org.koin.ktor.ext.inject
 
 fun Route.noteImageRoutes() {
@@ -23,11 +24,11 @@ fun Route.noteImageRoutes() {
         post {
             val multipartData = call.receiveMultipart(formFieldLimit = 1024 * 1024 * 100)
 
-            call.respond(noteImageService.uploadImage(multipartData))
+            call.respond(noteImageService.uploadImage(id, multipartData))
         }
 
         get {
-            val (stream, filename) = noteImageService.downloadImage()
+            val (stream, filename) = noteImageService.downloadImage(id)
 
             call.response.header(
                 HttpHeaders.ContentDisposition,
@@ -40,7 +41,7 @@ fun Route.noteImageRoutes() {
         }
 
         delete {
-            noteImageService.deleteImage()
+            noteImageService.deleteImage(id)
 
             call.respond(HttpStatusCode.NoContent)
         }

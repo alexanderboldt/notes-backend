@@ -5,13 +5,16 @@ import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
 import io.ktor.util.cio.writeChannel
 import io.ktor.utils.io.copyAndClose
+import org.alex.notes.domain.NoteResponse
+import org.alex.notes.repository.NoteDao
+import org.alex.notes.repository.toDomain
 import org.alex.notes.utils.BadRequestThrowable
 import java.io.File
 import java.io.InputStream
 
-class NoteImageService(private val s3Service: S3Service) {
+class NoteImageService(private val s3Service: S3Service, private val noteDao: NoteDao) {
 
-    suspend fun uploadImage(multipart: MultiPartData): String {
+    suspend fun uploadImage(id: Int, multipart: MultiPartData): NoteResponse {
 
         var file: File? = null
 
@@ -28,16 +31,25 @@ class NoteImageService(private val s3Service: S3Service) {
 
         if (file == null) throw BadRequestThrowable()
 
-        s3Service.uploadFile(file.absolutePath, file.name)
+        val filename = s3Service.uploadFile(file.absolutePath, file.name)
 
-        return "done"
+        return noteDao
+            .updateFilename(id, filename)
+            ?.toDomain()
+            ?: throw BadRequestThrowable()
     }
 
-    fun downloadImage(): Pair<InputStream, String> {
-        return s3Service.downloadFile("90bb4257-628d-4ef1-8379-085563ac6192.jpg") to "90bb4257-628d-4ef1-8379-085563ac6192.jpg"
+    suspend fun downloadImage(id: Int): Pair<InputStream, String> {
+        val filename = noteDao.get(id)?.filename ?: throw BadRequestThrowable()
+
+        return s3Service.downloadFile(filename) to filename
     }
 
-    suspend fun deleteImage() {
-        s3Service.deleteFile("90bb4257-628d-4ef1-8379-085563ac6192.jpg")
+    suspend fun deleteImage(id: Int) {
+        val filename = noteDao.get(id)?.filename ?: throw BadRequestThrowable()
+
+        s3Service.deleteFile(filename)
+
+        noteDao.deleteFilename(id)
     }
 }
