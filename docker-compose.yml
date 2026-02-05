@@ -11,6 +11,19 @@ services:
     networks:
       - notes
 
+  notes-minio:
+    image: minio/minio:latest
+    container_name: notes-minio
+    command: server --console-address ":9001" /data
+    env_file: kustomize/base/secrets/minio.env
+    ports:
+      - 9000:9000
+      - 9001:9001
+    volumes:
+      - minio_data:/data
+    networks:
+      - notes
+
   notes-app:
     image: ghcr.io/alexanderboldt/notes:3.1.0
     container_name: notes-app
@@ -21,11 +34,13 @@ services:
       - kustomize/base/secrets/notes.env
     depends_on:
       - notes-mysql
+      - notes-minio
     networks:
       - notes
 
 volumes:
   mysql_data:
+  minio_data:
 
 networks:
   notes:
