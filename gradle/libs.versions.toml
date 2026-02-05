@@ -5,6 +5,7 @@ logback = "1.5.25"
 mysql = "9.5.0"
 exposed = "1.0.0"
 koin = "4.1.1"
+aws-s3 = "2.41.17"
 
 # test versions
 kotest = "6.1.0"
@@ -33,6 +34,8 @@ exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "e
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 
 koin = { module = "io.insert-koin:koin-ktor", version.ref = "koin" }
+
+aws-s3 = { module = "software.amazon.awssdk:s3", version.ref = "aws-s3" }
 
 # test libraries
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }

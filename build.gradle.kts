@@ -46,6 +46,8 @@ dependencies {
 
     implementation(libs.koin)
 
+    implementation(libs.aws.s3)
+
     // test libraries
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.ktor.client.content.negotiation)
