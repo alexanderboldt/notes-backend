@@ -13,6 +13,7 @@ data class NoteResponse(
     val id: Int = 0,
     val title: String,
     val description: String?,
+    val filename: String?,
     val createdAt: Long,
     val updatedAt: Long
 )

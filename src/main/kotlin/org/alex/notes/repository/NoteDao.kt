@@ -28,6 +28,7 @@ class NoteDao {
         id = this[NoteTable.id],
         title = this[NoteTable.title],
         description = this[NoteTable.description],
+        filename = this[NoteTable.filename],
         createdAt = this[NoteTable.createdAt],
         updatedAt = this[NoteTable.updatedAt]
     )
@@ -38,6 +39,7 @@ class NoteDao {
         val inserted = NoteTable.insert {
             it[title] = note.title
             it[description] = note.description
+            it[filename] = note.filename
             it[createdAt] = note.createdAt
             it[updatedAt] = note.updatedAt
         }

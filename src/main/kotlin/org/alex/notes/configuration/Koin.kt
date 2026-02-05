@@ -13,9 +13,9 @@ import org.koin.ktor.plugin.Koin
 
 fun Application.configureKoin() {
     val url = property<String>("s3.url")
-    val region = property<String>("s3.region")
     val accessKey = property<String>("s3.accessKey")
     val secretKey = property<String>("s3.secretKey")
+    val region = property<String>("s3.region")
 
     install(Koin) {
         modules(

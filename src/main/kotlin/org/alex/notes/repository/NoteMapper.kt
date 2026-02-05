@@ -9,10 +9,11 @@ import java.util.Date
 fun NoteRequest.toEntity() = NoteEntity(
     title = title,
     description = description,
+    filename = null,
     createdAt = Date().time,
     updatedAt = Date().time
 )
 
 // from entity to domain
 
-fun NoteEntity.toDomain() = NoteResponse(id, title, description, createdAt, updatedAt)
+fun NoteEntity.toDomain() = NoteResponse(id, title, description, filename, createdAt, updatedAt)
