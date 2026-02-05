@@ -7,6 +7,7 @@ import io.ktor.util.cio.writeChannel
 import io.ktor.utils.io.copyAndClose
 import org.alex.notes.utils.BadRequestThrowable
 import java.io.File
+import java.io.InputStream
 
 class NoteImageService(private val s3Service: S3Service) {
 
@@ -30,5 +31,13 @@ class NoteImageService(private val s3Service: S3Service) {
         s3Service.uploadFile(file.absolutePath, file.name)
 
         return "done"
+    }
+
+    fun downloadImage(): Pair<InputStream, String> {
+        return s3Service.downloadFile("90bb4257-628d-4ef1-8379-085563ac6192.jpg") to "90bb4257-628d-4ef1-8379-085563ac6192.jpg"
+    }
+
+    suspend fun deleteImage() {
+        s3Service.deleteFile("90bb4257-628d-4ef1-8379-085563ac6192.jpg")
     }
 }

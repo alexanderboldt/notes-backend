@@ -5,6 +5,7 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
 import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.s3.S3Client
+import java.io.InputStream
 import java.net.URI
 import java.nio.file.Path
 import java.util.UUID
@@ -55,5 +56,17 @@ class S3Service(
         )
 
         return filename
+    }
+
+    fun downloadFile(filename: String): InputStream {
+        return s3Client.getObject {
+            it.bucket(bucket).key(filename).build()
+        }
+    }
+
+    fun deleteFile(filename: String) {
+        s3Client.deleteObject {
+            it.bucket(bucket).key(filename).build()
+        }
     }
 }
