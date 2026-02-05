@@ -3,21 +3,26 @@ package org.alex.notes.configuration
 import org.alex.notes.repository.NoteDao
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
+import io.ktor.server.config.property
+import org.alex.notes.service.NoteImageService
 import org.alex.notes.service.NoteService
+import org.alex.notes.service.S3Service
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 
-val noteServiceModule = module {
-    factoryOf(::NoteService)
-}
-
-val noteDaoModule = module {
-    factoryOf(::NoteDao)
-}
-
 fun Application.configureKoin() {
+    val url = property<String>("s3.url")
+    val region = property<String>("s3.region")
+    val accessKey = property<String>("s3.accessKey")
+    val secretKey = property<String>("s3.secretKey")
+
     install(Koin) {
-        modules(noteServiceModule, noteDaoModule)
+        modules(
+            module { factory { S3Service(url, region, accessKey, secretKey) } },
+            module { factoryOf(::NoteService) },
+            module { factoryOf(::NoteImageService) },
+            module { factoryOf(::NoteDao) },
+        )
     }
 }

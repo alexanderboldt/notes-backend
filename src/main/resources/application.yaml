@@ -9,3 +9,9 @@ database:
   url: ${MYSQL_URL}
   user: ${MYSQL_USER}
   password: ${MYSQL_PASSWORD}
+
+s3:
+  url: ${S3_URL}
+  accessKey: ${S3_ACCESS_KEY}
+  secretKey: ${S3_SECRET_KEY}
+  region: ${S3_REGION}
