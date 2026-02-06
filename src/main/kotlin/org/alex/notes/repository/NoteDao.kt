@@ -11,6 +11,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.update
 import java.util.Date
 
+@Suppress("TooManyFunctions")
 class NoteDao {
 
     private suspend fun <T> dbQuery(block: suspend () -> T): T =

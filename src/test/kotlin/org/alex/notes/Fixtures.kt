@@ -10,7 +10,7 @@ object Fixtures {
             val dinner = NoteRequest("Make Dinner", "Healthy")
         }
         object Entity {
-            val dinner = NoteEntity(10, "Make Dinner", "Healthy", 17234824, 17234824)
+            val dinner = NoteEntity(10, "Make Dinner", "Healthy", null, 17234824, 17234824)
         }
     }
 }
