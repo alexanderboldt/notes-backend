@@ -19,7 +19,7 @@ jobs:
           java-version: 21
 
       - name: Run unit tests
-        run: ./gradlew clean test --tests "org.alex.notes.utils.*"
+        run: ./gradlew clean test --tests "*UnitTest"
 
       - name: Upload test report to artifact
         if: always()

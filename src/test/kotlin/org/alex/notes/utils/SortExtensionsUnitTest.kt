@@ -8,7 +8,7 @@ import org.alex.notes.repository.NoteTable
 import org.jetbrains.exposed.v1.core.SortOrder
 import kotlin.collections.emptyList
 
-class SortExtensionsTest : StringSpec ({
+class SortExtensionsUnitTest : StringSpec ({
 
     "convert empty string to empty list" {
         val sort = "".convertToSort(NoteTable.columns)
