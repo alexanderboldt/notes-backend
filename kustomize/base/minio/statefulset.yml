@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: notes-minio
+spec:
+  selector:
+    app: notes-minio
+  ports:
+    - name: api
+      port: 9000
+      targetPort: 9000
+    - name: console
+      port: 9001
+      targetPort: 9001
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: notes-minio
+spec:
+  selector:
+    matchLabels:
+      app: notes-minio
+  serviceName: notes-minio
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: notes-minio
+    spec:
+      containers:
+        - name: notes-minio
+          image: minio/minio:latest
+          imagePullPolicy: IfNotPresent
+          args:
+            - server
+            - /data
+            - --console-address=:9001
+          envFrom:
+            - secretRef:
+                name: notes-minio-secret
+          ports:
+            - name: api
+              containerPort: 9000
+            - name: console
+              containerPort: 9001
+          volumeMounts:
+            - name: notes-minio-storage
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: notes-minio-storage
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi

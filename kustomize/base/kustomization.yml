@@ -3,12 +3,16 @@ namespace: notes
 resources:
   - namespace.yml
   - mysql/statefulset.yml
+  - minio/statefulset.yml
   - notes/deployment.yml
 
 secretGenerator:
   - name: notes-mysql-secret
     envs:
       - secrets/mysql.env
+  - name: notes-minio-secret
+    envs:
+      - secrets/minio.env
   - name: notes-app-secret
     envs:
       - secrets/notes.env
