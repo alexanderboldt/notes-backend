@@ -13,7 +13,7 @@ kotest-ktor = "2.0.0"
 testcontainers = "2.0.3"
 
 # plugin versions
-kotlin = "2.3.0"
+kotlin = "2.3.10"
 detekt = "1.23.8"
 
 [libraries]
