@@ -1,4 +1,5 @@
 ktor:
+  profile: ${KTOR_PROFILE:prod}
   application:
     modules:
       - org.alex.notes.ApplicationKt.module
@@ -11,8 +12,8 @@ database:
   password: ${MYSQL_PASSWORD}
 
 s3:
-  accessKey: ${S3_ACCESS_KEY}
-  secretKey: ${S3_SECRET_KEY}
-  host: ${S3_HOST}
-  port: ${S3_PORT}
+  accessKey: ${S3_ACCESS_KEY:null}
+  secretKey: ${S3_SECRET_KEY:null}
+  host: ${S3_HOST:null}
+  port: ${S3_PORT:null}
   region: ${S3_REGION}

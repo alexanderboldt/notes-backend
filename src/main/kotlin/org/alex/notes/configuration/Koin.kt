@@ -1,5 +1,10 @@
 package org.alex.notes.configuration
 
+import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
+import aws.sdk.kotlin.services.s3.S3Client
+import aws.smithy.kotlin.runtime.net.Host
+import aws.smithy.kotlin.runtime.net.Scheme
+import aws.smithy.kotlin.runtime.net.url.Url
 import org.alex.notes.repository.NoteDao
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -12,25 +17,39 @@ import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 
 fun Application.configureKoin() {
-    val accessKey = property<String>("s3.accessKey")
-    val secretKey = property<String>("s3.secretKey")
-    val host = property<String>("s3.host")
-    val port = property<Int>("s3.port")
+    val profile = property<String>("ktor.profile")
+
     val region = property<String>("s3.region")
 
     install(Koin) {
         modules(
             module {
-                factory {
-                    S3Service(
-                        host,
-                        port,
-                        region,
-                        accessKey,
-                        secretKey
-                    )
+                if (profile == "prod") {
+                    factory { S3Client { this.region = region } }
+                } else {
+                    val accessKey = property<String>("s3.accessKey")
+                    val secretKey = property<String>("s3.secretKey")
+                    val host = property<String>("s3.host")
+                    val port = property<Int>("s3.port")
+
+                    factory {
+                        S3Client {
+                            endpointUrl = Url {
+                                this.scheme = Scheme.parse("http")
+                                this.host = Host.parse(host)
+                                this.port = port
+                            }
+                            this.region = region
+                            credentialsProvider = StaticCredentialsProvider {
+                                accessKeyId = accessKey
+                                secretAccessKey = secretKey
+                            }
+                            forcePathStyle = true
+                        }
+                    }
                 }
             },
+            module { factoryOf(::S3Service) },
             module { factoryOf(::NoteService) },
             module { factoryOf(::NoteImageService) },
             module { factoryOf(::NoteDao) },

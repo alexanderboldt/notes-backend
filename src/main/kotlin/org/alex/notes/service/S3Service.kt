@@ -1,6 +1,5 @@
 package org.alex.notes.service
 
-import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.createBucket
 import aws.sdk.kotlin.services.s3.deleteObject
@@ -8,35 +7,12 @@ import aws.sdk.kotlin.services.s3.model.GetObjectRequest
 import aws.sdk.kotlin.services.s3.putObject
 import aws.smithy.kotlin.runtime.content.asByteStream
 import aws.smithy.kotlin.runtime.content.writeToFile
-import aws.smithy.kotlin.runtime.net.Host
-import aws.smithy.kotlin.runtime.net.Scheme
-import aws.smithy.kotlin.runtime.net.url.Url
 import java.io.File
 import java.util.UUID
 
-class S3Service(
-    host: String,
-    port: Int,
-    region: String,
-    accessKey: String,
-    secretKey: String,
-) {
+class S3Service(private val s3Client: S3Client) {
 
     private val noteBucket = "note"
-
-    private val s3Client = S3Client {
-        endpointUrl = Url {
-            this.scheme = Scheme.parse("http")
-            this.host = Host.parse(host)
-            this.port = port
-        }
-        this.region = region
-        credentialsProvider = StaticCredentialsProvider {
-            accessKeyId = accessKey
-            secretAccessKey = secretKey
-        }
-        forcePathStyle = true
-    }
 
 
     suspend fun createBucket() {
