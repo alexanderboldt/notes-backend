@@ -10,7 +10,6 @@ import org.alex.notes.repository.NoteDao
 import org.alex.notes.repository.toDomain
 import org.alex.notes.utils.BadRequestThrowable
 import java.io.File
-import java.io.InputStream
 
 class NoteImageService(private val s3Service: S3Service, private val noteDao: NoteDao) {
 
@@ -31,6 +30,8 @@ class NoteImageService(private val s3Service: S3Service, private val noteDao: No
 
         if (file == null) throw BadRequestThrowable()
 
+        s3Service.createBucket()
+
         val filename = s3Service.uploadFile(file.absolutePath, file.name)
 
         return noteDao
@@ -39,7 +40,7 @@ class NoteImageService(private val s3Service: S3Service, private val noteDao: No
             ?: throw BadRequestThrowable()
     }
 
-    suspend fun downloadImage(id: Int): Pair<InputStream, String> {
+    suspend fun downloadImage(id: Int): Pair<File, String> {
         val filename = noteDao.get(id)?.filename ?: throw BadRequestThrowable()
 
         return s3Service.downloadFile(filename) to filename
