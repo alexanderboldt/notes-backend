@@ -1,72 +1,96 @@
 package org.alex.notes.service
 
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
-import software.amazon.awssdk.core.sync.RequestBody
-import software.amazon.awssdk.regions.Region
-import software.amazon.awssdk.services.s3.S3Client
-import java.io.InputStream
-import java.net.URI
-import java.nio.file.Path
+import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
+import aws.sdk.kotlin.services.s3.S3Client
+import aws.sdk.kotlin.services.s3.createBucket
+import aws.sdk.kotlin.services.s3.deleteObject
+import aws.sdk.kotlin.services.s3.model.GetObjectRequest
+import aws.sdk.kotlin.services.s3.putObject
+import aws.smithy.kotlin.runtime.content.asByteStream
+import aws.smithy.kotlin.runtime.content.writeToFile
+import aws.smithy.kotlin.runtime.net.Host
+import aws.smithy.kotlin.runtime.net.Scheme
+import aws.smithy.kotlin.runtime.net.url.Url
+import java.io.File
 import java.util.UUID
 
 class S3Service(
-    url: String,
+    host: String,
+    port: Int,
     region: String,
     accessKey: String,
     secretKey: String,
 ) {
 
-    private val s3Client = S3Client.builder()
-        .endpointOverride(URI.create(url))
-        .region(Region.of(region))
-        .forcePathStyle(true)
-        .credentialsProvider(
-            StaticCredentialsProvider.create(
-                AwsBasicCredentials.create(accessKey, secretKey)
-            )
-        ).build()
+    private val noteBucket = "note"
 
-    private val bucket = "note"
+    private val s3Client = S3Client {
+        endpointUrl = Url {
+            this.scheme = Scheme.parse("http")
+            this.host = Host.parse(host)
+            this.port = port
+        }
+        this.region = region
+        credentialsProvider = StaticCredentialsProvider {
+            accessKeyId = accessKey
+            secretAccessKey = secretKey
+        }
+        forcePathStyle = true
+    }
 
-    init {
-        // create the bucket if it not exists yet
+
+    suspend fun createBucket() {
         val bucketExists = s3Client
-            .listBuckets { it.build() }
-            .buckets()
-            .any { it.name() == bucket }
+            .listBuckets()
+            .buckets
+            ?.any { it.name == noteBucket }
+            ?: false
 
         if (!bucketExists) {
-            s3Client.createBucket { it.bucket(bucket).build() }
+            s3Client.createBucket {
+                bucket = noteBucket
+            }
         }
     }
 
     // create
 
-    fun uploadFile(path: String, filename: String): String {
+    suspend fun uploadFile(path: String, filename: String): String {
         val extension = filename
             .substringAfterLast(".", "")
             .let { if(it.isNotBlank()) ".$it" else "" }
 
         val filename = "${UUID.randomUUID()}$extension"
 
-        s3Client.putObject(
-            { it.bucket(bucket).key(filename).build() },
-            RequestBody.fromFile(Path.of(path))
-        )
+        s3Client.putObject {
+            bucket = noteBucket
+            key = filename
+            body = File(path).asByteStream()
+        }
 
         return filename
     }
 
-    fun downloadFile(filename: String): InputStream {
-        return s3Client.getObject {
-            it.bucket(bucket).key(filename).build()
+
+    suspend fun downloadFile(filename: String): File {
+        val request = GetObjectRequest {
+            bucket = noteBucket
+            key = filename
         }
+
+        val file = File("uploads/$filename")
+
+        s3Client.getObject(request) { response ->
+            response.body?.writeToFile(file)
+        }
+
+        return file
     }
 
-    fun deleteFile(filename: String) {
+    suspend fun deleteFile(filename: String) {
         s3Client.deleteObject {
-            it.bucket(bucket).key(filename).build()
+            bucket = noteBucket
+            key = filename
         }
     }
 }
