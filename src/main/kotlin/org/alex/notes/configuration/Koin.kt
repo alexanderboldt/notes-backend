@@ -12,14 +12,25 @@ import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 
 fun Application.configureKoin() {
-    val url = property<String>("s3.url")
     val accessKey = property<String>("s3.accessKey")
     val secretKey = property<String>("s3.secretKey")
+    val host = property<String>("s3.host")
+    val port = property<Int>("s3.port")
     val region = property<String>("s3.region")
 
     install(Koin) {
         modules(
-            module { factory { S3Service(url, region, accessKey, secretKey) } },
+            module {
+                factory {
+                    S3Service(
+                        host,
+                        port,
+                        region,
+                        accessKey,
+                        secretKey
+                    )
+                }
+            },
             module { factoryOf(::NoteService) },
             module { factoryOf(::NoteImageService) },
             module { factoryOf(::NoteDao) },
