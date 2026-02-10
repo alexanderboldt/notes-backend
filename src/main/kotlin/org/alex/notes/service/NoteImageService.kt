@@ -30,8 +30,6 @@ class NoteImageService(private val s3Service: S3Service, private val noteDao: No
 
         if (file == null) throw BadRequestThrowable()
 
-        s3Service.createBucket()
-
         val filename = s3Service.uploadFile(file.absolutePath, file.name)
 
         return noteDao

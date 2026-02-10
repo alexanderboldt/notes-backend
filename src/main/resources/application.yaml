@@ -16,4 +16,5 @@ s3:
   secretKey: ${S3_SECRET_KEY:null}
   host: ${S3_HOST:null}
   port: ${S3_PORT:null}
+  bucket: ${S3_BUCKET}
   region: ${S3_REGION}

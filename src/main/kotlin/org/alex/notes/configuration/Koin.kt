@@ -19,6 +19,7 @@ import org.koin.ktor.plugin.Koin
 fun Application.configureKoin() {
     val profile = property<String>("ktor.profile")
 
+    val bucketName = property<String>("s3.bucket")
     val region = property<String>("s3.region")
 
     install(Koin) {
@@ -49,7 +50,7 @@ fun Application.configureKoin() {
                     }
                 }
             },
-            module { factoryOf(::S3Service) },
+            module { factory { S3Service(get(), bucketName) } },
             module { factoryOf(::NoteService) },
             module { factoryOf(::NoteImageService) },
             module { factoryOf(::NoteDao) },
