@@ -11,6 +11,7 @@ This is a backend application for managing notes.
 - Exposed
 - Koin
 - MySql
+- AWS-Kotlin
 
 ### Test
 - Kotest
@@ -42,8 +43,8 @@ Delete the project namespace and the objects if not needed anymore:
 kubectl delete namespace notes
 ```
 
-## Install with OpenTofu (Terraform)
-Make sure a connection to AWS is available in the cli.
+## :cloud: Install with OpenTofu (Terraform)
+Make sure a connection to a cloud is available in the cli.
 
 Execute with these commands:
 ```bash
