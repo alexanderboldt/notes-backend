@@ -57,3 +57,6 @@ Delete all resources if not needed anymore:
 ```bash
 tofu destroy
 ```
+
+## :dog: Test with Bruno
+The folder `api-collection` contains the requests to test the app with Bruno.
