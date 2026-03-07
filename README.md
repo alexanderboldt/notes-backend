@@ -46,7 +46,7 @@ kubectl delete namespace notes
 ## :cloud: Install with OpenTofu (Terraform)
 Make sure a connection to a cloud is available in the cli.
 
-Execute with these commands:
+Navigate to the `opentofu` directory and execute with these commands:
 ```bash
 tofu init
 tofu plan
