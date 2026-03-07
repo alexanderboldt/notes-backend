@@ -1,0 +1,26 @@
+info:
+  name: Upload
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/v1/notes/:id/images"
+  params:
+    - name: id
+      value: "1"
+      type: path
+  body:
+    type: multipart-form
+    data:
+      - name: image
+        type: file
+        value:
+          - /home/alex/Downloads/Weltbester-Black-Bean-Burger-3-1280x854.jpg
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

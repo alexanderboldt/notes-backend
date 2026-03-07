@@ -1,0 +1,4 @@
+name: kubernetes
+variables:
+  - name: BASE_URL
+    value: http://192.168.49.2:30000/api

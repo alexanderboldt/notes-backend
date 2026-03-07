@@ -1,0 +1,4 @@
+name: aws
+variables:
+  - name: BASE_URL
+    value: http://3.70.202.94:4000/api
