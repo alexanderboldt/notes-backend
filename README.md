@@ -38,6 +38,11 @@ Install all objects with Kustomize:
 kubectl apply -k kustomize/base
 ```
 
+Set the context to the project namespace:
+```bash
+kubectl config set-context --current -n notes
+```
+
 Delete the project namespace and the objects if not needed anymore:
 ```bash
 kubectl delete namespace notes
