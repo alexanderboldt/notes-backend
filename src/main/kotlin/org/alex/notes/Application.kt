@@ -6,12 +6,14 @@ import org.alex.notes.configuration.configureKoin
 import org.alex.notes.configuration.configureLogging
 import org.alex.notes.configuration.configureRouting
 import org.alex.notes.configuration.configureSerialization
+import org.alex.notes.configuration.configureServer
 import org.alex.notes.configuration.configureStatusPages
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused")
 fun Application.module(testing: Boolean = false) {
+    configureServer()
     configureDatabase()
     configureSerialization()
     configureLogging()
