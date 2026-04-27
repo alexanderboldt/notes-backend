@@ -24,9 +24,9 @@ services:
     networks:
       - notes
 
-  notes-app:
-    image: ghcr.io/alexanderboldt/notes:5.1.0
-    container_name: notes-app
+  notes-backend:
+    image: ghcr.io/alexanderboldt/notes-backend:5.2.0
+    container_name: notes-backend
     ports:
       - 4000:4000
     env_file:
