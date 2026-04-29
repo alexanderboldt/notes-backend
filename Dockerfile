@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . .
 RUN ./gradlew buildFatJar -x test --no-daemon
 
-FROM eclipse-temurin:21-jdk-alpine
+FROM eclipse-temurin:21-jdk-alpine as stage
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 EXPOSE 4000
