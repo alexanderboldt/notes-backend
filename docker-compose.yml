@@ -25,7 +25,7 @@ services:
       - notes
 
   notes-backend:
-    image: ghcr.io/alexanderboldt/notes-backend:5.2.0
+    image: ghcr.io/alexanderboldt/notes-backend:5.3.0
     container_name: notes-backend
     ports:
       - 4000:4000
