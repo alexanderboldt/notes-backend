@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: notes-frontend
-          image: ghcr.io/alexanderboldt/notes-frontend-kubernetes:0.5.0
+          image: ghcr.io/alexanderboldt/notes-frontend:0.6.0-kubernetes
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
