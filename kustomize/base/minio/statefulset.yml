@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: notes-minio
 spec:
+  type: NodePort
   selector:
     app: notes-minio
   ports:
@@ -12,6 +13,7 @@ spec:
     - name: console
       port: 9001
       targetPort: 9001
+      nodePort: 30200
 ---
 apiVersion: apps/v1
 kind: StatefulSet
