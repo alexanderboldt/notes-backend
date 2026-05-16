@@ -12,6 +12,7 @@ This is a backend application for managing notes.
 - Koin
 - MySql
 - AWS-Kotlin
+- RustFS
 
 ### Test
 - Kotest
