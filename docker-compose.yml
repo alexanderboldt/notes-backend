@@ -11,16 +11,15 @@ services:
     networks:
       - notes
 
-  notes-minio:
-    image: minio/minio:latest
-    container_name: notes-minio
-    command: server --console-address ":9001" /data
-    env_file: kustomize/base/secrets/minio.env
+  notes-rustfs:
+    image: rustfs/rustfs:latest
+    container_name: notes-rustfs
+    env_file: kustomize/base/secrets/rustfs.env
+    volumes:
+      - rustfs_data:/data
     ports:
       - 9000:9000
       - 9001:9001
-    volumes:
-      - minio_data:/data
     networks:
       - notes
 
@@ -34,13 +33,13 @@ services:
       - kustomize/base/secrets/notes.env
     depends_on:
       - notes-mysql
-      - notes-minio
+      - notes-rustfs
     networks:
       - notes
 
 volumes:
   mysql_data:
-  minio_data:
+  rustfs_data:
 
 networks:
   notes:
